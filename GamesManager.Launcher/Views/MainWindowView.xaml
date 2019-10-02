@@ -19,7 +19,7 @@
             <RowDefinition Height="55"/>
             <RowDefinition Height="55"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="90"/>
         </Grid.RowDefinitions>
 
         <!--<materialDesign:Card Padding="32" Margin="15" Grid.Row="1">
@@ -29,44 +29,57 @@
         <Grid Grid.Column="0" Grid.Row="0">
             <materialDesign:ColorZone 
                 materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                Mode="Light" Padding="50">
-                <!-- TODO: Logo and Settings -->
+                Mode="Light" VerticalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
+                            Command="{Binding SettingsButtonCommand}"
+                            ToolTip="Settings" Margin="5,0">
+                        <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
+                            Command="{Binding FeedbackButtonCommand}"
+                            ToolTip="Feedback" Margin="5,0">
+                        <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
+                    </Button>
+                </StackPanel>
+                <!-- TODO: Logo -->
             </materialDesign:ColorZone>
         </Grid>
 
-        <ContentControl Grid.Row="2" Content="{Binding InformationControl}" />
+        <ContentControl Grid.Row="2" Content="{Binding InformationControl, UpdateSourceTrigger=PropertyChanged}" />
 
         <Grid Grid.Row="1">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" Margin="5" IsChecked="True" Content="Roll a Ball" />
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" Margin="5" IsChecked="False" Content="Roll a Ball" />
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" Margin="5" IsChecked="False" Content="Roll a Ball" />
+                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" 
+                             Margin="5" IsChecked="True" Content="Roll a Ball" />
             </StackPanel>
         </Grid>
 
         <Grid Grid.Column="0" Grid.Row="3" Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
-                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="20"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="{Binding DownloadStatus}" 
                            HorizontalAlignment="Left" 
                            VerticalAlignment="Bottom"/>
-                <TextBlock Grid.Row="0" Text="{Binding DownloadPercentString, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBlock Grid.Row="0" 
+                           Text="{Binding DownloadPercentString, UpdateSourceTrigger=PropertyChanged}" 
                            HorizontalAlignment="Right" 
                            VerticalAlignment="Bottom"/>
-                <ProgressBar Value="{Binding DownloadPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="15" Grid.Row="1"/>
+                <ProgressBar Value="{Binding DownloadPercent, Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
                        TextAlignment="Left" VerticalAlignment="Bottom" 
-                       Text="by Alexey Kukushkin" Grid.Row="2"/>
+                       Text="Version 0.0.1" Grid.Row="2"/>
             </Grid>
 
             <Grid Grid.Column="1">

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using GamesManager.Launcher.Views;
 using MVVM_Helper.Binding;
 using MVVM_Helper.Commands;
 
@@ -18,12 +20,14 @@ namespace GamesManager.Launcher.ViewModels
         private string header;
         private string downloadStatus;
         private int downloadPercent;
+        private UserControl informationControl;
 
         public string Header { get => header; set => header = value; }
 
         public string DownloadStatus
         {
-            get => downloadStatus; set
+            get => downloadStatus;
+            set
             {
                 downloadStatus = value;
                 RaiseOnPropertyChanged();
@@ -45,6 +49,20 @@ namespace GamesManager.Launcher.ViewModels
         public bool IsEnablePlayButton { get; set; }
         public DelegateCommand PlayButtonCommand { get; set; }
 
+        public DelegateCommand SettingsButtonCommand { get; set; }
+
+        public DelegateCommand FeedbackButtonCommand { get; set; }
+
+        public UserControl InformationControl
+        {
+            get => informationControl;
+            set
+            {
+                informationControl = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -55,6 +73,8 @@ namespace GamesManager.Launcher.ViewModels
             DownloadStatus = "Complete";
             downloadPercent = 100;
             PlayButtonCommand = new DelegateCommand(param => Play(), param => IsEnablePlayButton);
+            SettingsButtonCommand = new DelegateCommand(param => Settings());
+            FeedbackButtonCommand = new DelegateCommand(param => Feedback());
             IsEnablePlayButton = true;
         }
 
@@ -65,8 +85,16 @@ namespace GamesManager.Launcher.ViewModels
         private void Play()
         {
             IsEnablePlayButton = false;
-            DownloadPercent = 10;
+        }
 
+        private void Settings()
+        {
+            
+        }
+
+        private void Feedback()
+        {
+            
         }
 
         #endregion
