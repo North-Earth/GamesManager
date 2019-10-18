@@ -6,10 +6,12 @@ namespace GamesManager.Common
 {
     public class LatestVersionInfo
     {
-        public int Id { get; set; }
+        public GameName Id { get; set; }
 
         public string Version { get; set; }
 
         public DateTime ReleaseDate { get; set; }
+
+        public string Uri { get; set; }
     }
 }
