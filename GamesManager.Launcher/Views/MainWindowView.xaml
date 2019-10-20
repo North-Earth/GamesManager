@@ -68,13 +68,15 @@
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="{Binding DownloadStatus}" 
+                <TextBlock Grid.Row="0" Text="{Binding ProcessStatus}" 
                            HorizontalAlignment="Left" 
                            VerticalAlignment="Bottom"/>
                 <TextBlock Grid.Row="0" 
-                           Text="{Binding DownloadPercentString, UpdateSourceTrigger=PropertyChanged}" 
                            HorizontalAlignment="Right" 
-                           VerticalAlignment="Bottom"/>
+                           VerticalAlignment="Bottom">
+                    <Run Text="{Binding DownloadPercent, UpdateSourceTrigger=PropertyChanged}" />
+                    <Run Text="%"/>
+                </TextBlock>
                 <ProgressBar Value="{Binding DownloadPercent, Mode=TwoWay, 
                     UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 

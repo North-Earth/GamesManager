@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GamesManager.Common.Classes;
+using GamesManager.Common.Enums;
+using GamesManager.Launcher.Models;
+using GamesManager.Launcher.Models.Enums;
 using GamesManager.Launcher.Views;
 using MVVM_Helper.Binding;
 using MVVM_Helper.Commands;
@@ -15,21 +20,23 @@ namespace GamesManager.Launcher.ViewModels
     {
         #region Fields
 
-        const string MainHeader = "Alexey Kukushkin's Game Launcher";
+        private const string MainHeader = "Alexey Kukushkin's Game Launcher";
 
         private string header;
-        private string downloadStatus;
+        private ProcessStatus processStatus;
         private int downloadPercent;
         private UserControl informationControl;
 
+        private readonly IUpdater updater;
+
         public string Header { get => header; set => header = value; }
 
-        public string DownloadStatus
+        public ProcessStatus ProcessStatus
         {
-            get => downloadStatus;
+            get => processStatus;
             set
             {
-                downloadStatus = value;
+                processStatus = value;
                 RaiseOnPropertyChanged();
             }
         }
@@ -69,10 +76,12 @@ namespace GamesManager.Launcher.ViewModels
 
         public MainWindowViewModel()
         {
+            updater = new Updater();
+
             Header = MainHeader;
-            DownloadStatus = "Complete";
+            ProcessStatus = ProcessStatus.Complete;
             downloadPercent = 100;
-            PlayButtonCommand = new DelegateCommand(param => Play(), param => IsEnablePlayButton);
+            PlayButtonCommand = new DelegateCommand(async param => await Task.Factory.StartNew(async () => await Play()), param => IsEnablePlayButton);
             SettingsButtonCommand = new DelegateCommand(param => Settings());
             FeedbackButtonCommand = new DelegateCommand(param => Feedback());
             IsEnablePlayButton = true;
@@ -82,9 +91,46 @@ namespace GamesManager.Launcher.ViewModels
 
         #region Methods
 
-        private void Play()
+        private async Task Start()
         {
+
+        }
+
+        private async Task Play()
+        {
+            switch (ProcessStatus)
+            {
+                case ProcessStatus.Checking:
+                    break;
+                case ProcessStatus.Downloading:
+                    break;
+                case ProcessStatus.Installing:
+                    break;
+                case ProcessStatus.Complete:
+                    break;
+                case ProcessStatus.Error:
+                    break;
+                default:
+                    break;
+            }
+
+            ProcessStatus = ProcessStatus.Checking;
             IsEnablePlayButton = false;
+
+            var latestVersion = await GetUpdates(GameName.Roll_a_Ball);
+            processStatus = ProcessStatus.Complete;
+
+            var task = await Task.Factory.StartNew(async () => await updater.DownloadLatestVersion(latestVersion));
+
+            while (!task.IsCompleted)
+            {
+                DownloadPercent = updater.CompletionPercent;
+                ProcessStatus = updater.Status;
+            }
+
+            task.Wait();
+
+            IsEnablePlayButton = true;
         }
 
         private void Settings()
@@ -96,6 +142,9 @@ namespace GamesManager.Launcher.ViewModels
         {
             
         }
+
+        private async Task<LatestVersionInfo> GetUpdates(GameName gameName) 
+            => await updater.GetLatestVersionInfo(gameName);
 
         #endregion
     }
