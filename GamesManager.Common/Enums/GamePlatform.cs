@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GamesManager.Common
+namespace GamesManager.Common.Enums
 {
     public enum GamePlatform
     {
-        win86 = 1,
-        win64 = 2
+        win86 = 0,
+        win64 = 1
     }
 }

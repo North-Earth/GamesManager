@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GamesManager.Common
+namespace GamesManager.Common.Enums
 {
     public enum GameName
     {
