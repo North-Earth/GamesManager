@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using GamesManager.Common;
+using GamesManager.Common.Classes;
+using GamesManager.Common.Enums;
 
 namespace GamesManager.Api
 {

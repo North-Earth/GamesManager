@@ -7,7 +7,8 @@ using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using GamesManager.Api.Models;
-using GamesManager.Common;
+using GamesManager.Common.Classes;
+using GamesManager.Common.Enums;
 using Microsoft.Extensions.Configuration;
 
 namespace GamesManager.Api
@@ -36,15 +37,17 @@ namespace GamesManager.Api
         public async Task<LatestVersionInfo> GetLatestVersionAsync(GameName gameName, GamePlatform gamePlatform)
         {
             var release = await GetReleaseAsync(gameName).ConfigureAwait(false);
-            var uri = release.assets.Where(a => a.name.Contains(value: gamePlatform.ToString(), StringComparison.Ordinal))
-                .SingleOrDefault()?.browser_download_url;
+            var asset = release.assets.Where(a => a.name.Contains(value: gamePlatform.ToString(), StringComparison.Ordinal))
+                .SingleOrDefault();
 
             return new LatestVersionInfo()
             {
                 Id = gameName,
+                FileName = asset.name,
                 ReleaseDate = DateTime.Parse(release.published_at, new CultureInfo("en-US", false)),
                 Version = release.tag_name,
-                Uri = uri
+                Uri = new Uri(asset.browser_download_url),
+                Size = asset.size
             };
         }
 
@@ -64,7 +67,6 @@ namespace GamesManager.Api
                 client.DefaultRequestHeaders.Accept.Add(mediaType);
                 client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
 
-                Task<System.IO.Stream> taskStream = client.GetStreamAsync(requestUri);
                 var releaseStream = await client.GetStreamAsync(requestUri).ConfigureAwait(false);
 
                 releases = serializer.ReadObject(releaseStream) as List<Release>;

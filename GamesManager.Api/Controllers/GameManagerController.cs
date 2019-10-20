@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using GamesManager.Common;
+using GamesManager.Common.Classes;
+using GamesManager.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamesManager.Api.Controllers
