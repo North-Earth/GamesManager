@@ -6,6 +6,14 @@
         Downloading = 1,
         Installing = 2,
         Complete = 3,
-        Error = 4
+        Done = 4,
+        Error = 5
+    }
+
+    public enum ProcessButtonStatus
+    {
+        Play = 0,
+        Install = 1,
+        Cancel = 2
     }
 }
