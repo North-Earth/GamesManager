@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,13 +23,17 @@ namespace GamesManager.Launcher.ViewModels
         #region Fields
 
         private const string MainHeader = "Alexey Kukushkin's Game Launcher";
+        private readonly IUpdater updater;
 
-        private string header;
-        private ProcessStatus processStatus;
         private int downloadPercent;
+        private string header;
+        private bool isEnableProcessButton;
+
+        private ProcessStatus processStatus;
+        private ProcessButtonStatus processButtonStatus;
         private UserControl informationControl;
 
-        private readonly IUpdater updater;
+        private CancellationTokenSource tokenSource;
 
         public string Header { get => header; set => header = value; }
 
@@ -36,12 +42,30 @@ namespace GamesManager.Launcher.ViewModels
             get => processStatus;
             set
             {
+                switch (value)
+                {
+                    case ProcessStatus.Checking:
+                        IsEnableProcessButton = false;
+                        break;
+                    case ProcessStatus.Downloading:
+                    case ProcessStatus.Installing:
+                        ProcessButtonName = ProcessButtonStatus.Cancel;
+                        IsEnableProcessButton = true;
+                        break;
+                    case ProcessStatus.Complete:
+                        ProcessButtonName = ProcessButtonStatus.Play;
+                        IsEnableProcessButton = true;
+                        break;
+                    case ProcessStatus.Done:
+                        ProcessButtonName = ProcessButtonStatus.Install;
+                        IsEnableProcessButton = true;
+                        break;
+                }
+
                 processStatus = value;
                 RaiseOnPropertyChanged();
             }
         }
-
-        public string DownloadPercentString { get => $"{downloadPercent}%"; }
 
         public int DownloadPercent
         {
@@ -53,8 +77,27 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public bool IsEnablePlayButton { get; set; }
-        public DelegateCommand PlayButtonCommand { get; set; }
+        public bool IsEnableProcessButton
+        {
+            get => isEnableProcessButton;
+            set
+            {
+                isEnableProcessButton = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+
+        public ProcessButtonStatus ProcessButtonName 
+        { 
+            get => processButtonStatus;
+            set
+            {
+                processButtonStatus = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+
+        public DelegateCommand ProcessButtonCommand { get; set; }
 
         public DelegateCommand SettingsButtonCommand { get; set; }
 
@@ -77,73 +120,133 @@ namespace GamesManager.Launcher.ViewModels
         public MainWindowViewModel()
         {
             updater = new Updater();
+            tokenSource = new CancellationTokenSource();
 
-            Header = MainHeader;
-            ProcessStatus = ProcessStatus.Complete;
+            header = MainHeader;
             downloadPercent = 100;
-            PlayButtonCommand = new DelegateCommand(async param => await Task.Factory.StartNew(async () => await Play()), param => IsEnablePlayButton);
+
+            ProcessButtonCommand = new DelegateCommand(async param => await ProcessButtonClick(), param => IsEnableProcessButton);
+
             SettingsButtonCommand = new DelegateCommand(param => Settings());
             FeedbackButtonCommand = new DelegateCommand(param => Feedback());
-            IsEnablePlayButton = true;
+
+            ProcessStatus = ProcessStatus.Done;
         }
 
         #endregion
 
         #region Methods
 
-        private async Task Start()
+        private async Task ProcessButtonClick()
         {
-
-        }
-
-        private async Task Play()
-        {
-            switch (ProcessStatus)
+            switch (ProcessButtonName)
             {
-                case ProcessStatus.Checking:
+                case ProcessButtonStatus.Play:
+                    await PlayGame(GameName.Roll_a_Ball);
                     break;
-                case ProcessStatus.Downloading:
+                case ProcessButtonStatus.Install:
+                    await Task.Factory.StartNew(async () => await StartProcess(), tokenSource.Token);          
                     break;
-                case ProcessStatus.Installing:
-                    break;
-                case ProcessStatus.Complete:
-                    break;
-                case ProcessStatus.Error:
+                case ProcessButtonStatus.Cancel:
+                    CancelProcesses();
                     break;
                 default:
                     break;
             }
+        }
 
-            ProcessStatus = ProcessStatus.Checking;
-            IsEnablePlayButton = false;
-
-            var latestVersion = await GetUpdates(GameName.Roll_a_Ball);
-            processStatus = ProcessStatus.Complete;
-
-            var task = await Task.Factory.StartNew(async () => await updater.DownloadLatestVersion(latestVersion));
-
-            while (!task.IsCompleted)
+        private async Task StartProcess()
+        {
+            try
             {
-                DownloadPercent = updater.CompletionPercent;
-                ProcessStatus = updater.Status;
+                var latestVersion = await GetUpdates(GameName.Roll_a_Ball);
+
+                var task = await Task.Factory.StartNew(async () =>
+                {
+                    await updater.DownloadLatestVersion(latestVersion);
+                }, tokenSource.Token);
+
+                while (!task.IsCompleted)
+                {
+                    DownloadPercent = updater.CompletionPercent;
+                    ProcessStatus = updater.Status;
+                }
             }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine($"\r\nDownload canceled.\r\n");
+                DownloadPercent = 100;
+                ProcessStatus = ProcessStatus.Done;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"\r\nDownload failed.\r\n");
+            }
+            finally
+            {
+                Debug.WriteLine($"\r\ntokenSource.Dispose();\r\n");
+                tokenSource.Dispose();
+            }
+        }
 
-            task.Wait();
+        private void CancelProcesses()
+        {
+            if (tokenSource != null)
+            {
+                tokenSource.Cancel();
+            }
+        }
 
-            IsEnablePlayButton = true;
+        private async Task PlayGame(GameName gameName)
+        {
+            //switch (ProcessStatus)
+            //{
+            //    case ProcessStatus.Checking:
+            //        break;
+            //    case ProcessStatus.Downloading:
+            //        break;
+            //    case ProcessStatus.Installing:
+            //        break;
+            //    case ProcessStatus.Complete:
+            //        break;
+            //    case ProcessStatus.Error:
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+            //ProcessStatus = ProcessStatus.Checking;
+            //IsEnableProcessButton = false;
+
+            //var latestVersion = await GetUpdates(GameName.Roll_a_Ball);
+            //processStatus = ProcessStatus.Complete;
+
+            //var task = await Task.Factory.StartNew(async () => await updater.DownloadLatestVersion(latestVersion));
+
+            //while (!task.IsCompleted)
+            //{
+            //    DownloadPercent = updater.CompletionPercent;
+            //    ProcessStatus = updater.Status;
+            //}
+
+            //task.Wait();
+
+            //IsEnableProcessButton = true;
+
+            //bool test = true;
         }
 
         private void Settings()
         {
-            
+
         }
 
         private void Feedback()
         {
-            
+
         }
 
-        private async Task<LatestVersionInfo> GetUpdates(GameName gameName) 
+        private async Task<LatestVersionInfo> GetUpdates(GameName gameName)
             => await updater.GetLatestVersionInfo(gameName);
 
         #endregion
