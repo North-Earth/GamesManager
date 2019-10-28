@@ -14,6 +14,7 @@
     {
         Play = 0,
         Install = 1,
-        Cancel = 2
+        Update = 2,
+        Cancel = 3
     }
 }
