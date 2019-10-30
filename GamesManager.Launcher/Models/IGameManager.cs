@@ -13,6 +13,8 @@ namespace GamesManager.Launcher.Models
 
         public ProcessButtonStatus ProcessButtonStatus { get; }
 
+        public int DownloadProgressPercentage { get; }
+
         public Task StartupChecks();
 
         public Task StartProcess(CancellationToken token);

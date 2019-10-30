@@ -7,7 +7,8 @@
         Installing = 2,
         Complete = 3,
         Done = 4,
-        Error = 5
+        Error = 5,
+        Waiting = 6
     }
 
     public enum ProcessButtonStatus

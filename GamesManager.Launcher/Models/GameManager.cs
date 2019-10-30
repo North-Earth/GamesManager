@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -23,8 +24,7 @@ namespace GamesManager.Launcher.Models
         public GameName GameName { get; }
         public ProcessStatus ProcessStatus { get; private set; }
         public ProcessButtonStatus ProcessButtonStatus { get; private set; }
-
-        private WebClient _webClient;
+        public int DownloadProgressPercentage { get; private set; }
 
         #endregion
 
@@ -33,8 +33,6 @@ namespace GamesManager.Launcher.Models
         public GameManager(GameName gameName)
         {
             GameName = gameName;
-
-            _webClient = new WebClient();
         }
 
         #endregion
@@ -89,7 +87,7 @@ namespace GamesManager.Launcher.Models
 
         public void CancelProcesses()
         {
-            _webClient.CancelAsync();
+            //_webClient.CancelAsync();
         }
 
         private async Task Download(CancellationToken token)
@@ -97,19 +95,47 @@ namespace GamesManager.Launcher.Models
             ProcessStatus = ProcessStatus.Downloading;
             ProcessButtonStatus = ProcessButtonStatus.Cancel;
 
-            token.Register(() => _webClient.CancelAsync());
+            var webClient = new WebClient();
+            //webClient.DownloadFileCompleted += (s, e) => throw new NotImplementedException();
+            webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
+            webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
+
+            token.Register(() =>
+            {
+                webClient.CancelAsync();
+                ProcessStatus = ProcessStatus.Waiting;
+            });
 
             try
             {
                 var latestVersion = await GetLatestVersionInfo();
-                await _webClient.DownloadFileTaskAsync(latestVersion.Uri, Path.Combine("cache", latestVersion.FileName));
+                await webClient.DownloadFileTaskAsync(latestVersion.Uri, Path.Combine("cache", latestVersion.FileName));
+            }
+            catch (TaskCanceledException ex)
+            {
+                ProcessStatus = ProcessStatus.Done;
+                ProcessButtonStatus = ProcessButtonStatus.Install;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
+            finally
+            {
+                webClient.Dispose();
+            }
         }
+
+        private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            DownloadProgressPercentage = e.ProgressPercentage;
+        }
+
+        private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            ProcessStatus = ProcessStatus.Done;
+        }
+
 
         private async Task Install(CancellationToken token)
         {
