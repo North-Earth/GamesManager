@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using GamesManager.Common.Enums;
-using GamesManager.Launcher.Models.Enums;
+using GamesManager.Common.Enums
+using GamesManager.Launcher.Models.Events;
 
 namespace GamesManager.Launcher.Models
 {
@@ -9,11 +9,9 @@ namespace GamesManager.Launcher.Models
     {
         public GameName GameName { get; }
 
-        public ProcessStatus ProcessStatus { get; }
+        public delegate void StatusesChangedHandler(GameManagerStatusesChangedEventArgs eventArgs);
 
-        public ProcessButtonStatus ProcessButtonStatus { get; }
-
-        public int DownloadProgressPercentage { get; }
+        public event StatusesChangedHandler StatusesChanged;
 
         public Task StartupChecks();
 

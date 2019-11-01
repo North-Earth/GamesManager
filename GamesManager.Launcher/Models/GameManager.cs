@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using GamesManager.Common.Classes;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models.Enums;
+using GamesManager.Launcher.Models.Events;
 using GamesManager.Launcher.Properties;
 using Newtonsoft.Json;
 
@@ -21,10 +22,41 @@ namespace GamesManager.Launcher.Models
     {
         #region Fields
 
+        private ProcessStatus status;
+        private ProcessButtonStatus buttonStatus;
+        private int progressPercentage;
+
         public GameName GameName { get; }
-        public ProcessStatus ProcessStatus { get; private set; }
-        public ProcessButtonStatus ProcessButtonStatus { get; private set; }
-        public int DownloadProgressPercentage { get; private set; }
+
+        private ProcessStatus Status
+        {
+            get => status;
+            set
+            {
+                status = value;
+                InvokeStatusesChangedHandler();
+            }
+        }
+        private ProcessButtonStatus ButtonStatus
+        {
+            get => buttonStatus;
+            set
+            {
+                buttonStatus = value;
+                InvokeStatusesChangedHandler();
+            }
+        }
+        private int ProgressPercentage
+        {
+            get => progressPercentage;
+            set
+            {
+                progressPercentage = value;
+                InvokeStatusesChangedHandler();
+            }
+        }
+
+        public event IGameManager.StatusesChangedHandler StatusesChanged;
 
         #endregion
 
@@ -39,39 +71,41 @@ namespace GamesManager.Launcher.Models
 
         #region Methods
 
+        private void InvokeStatusesChangedHandler() 
+            => StatusesChanged(eventArgs: new GameManagerStatusesChangedEventArgs(Status, ButtonStatus, ProgressPercentage));
+
         public async Task StartupChecks()
         {
-            ProcessStatus = ProcessStatus.Checking;
+            Status = ProcessStatus.Checking;
 
             try
             {
-                if (await IsInstalled())
+                if (IsInstalled())
                 {
-                    ProcessButtonStatus = await IsUpdated() ? ProcessButtonStatus.Play : ProcessButtonStatus.Update;
+                    ButtonStatus = await IsUpdated() ? ProcessButtonStatus.Play : ProcessButtonStatus.Update;
                 }
                 else
                 {
-                    ProcessButtonStatus = ProcessButtonStatus.Install;
+                    ButtonStatus = ProcessButtonStatus.Install;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw ex;
+                throw;
             }
 
-            ProcessStatus = ProcessStatus.Done;
+            Status = ProcessStatus.Done;
         }
 
         public async Task StartProcess(CancellationToken token)
         {
-            switch (ProcessButtonStatus)
+            switch (ButtonStatus)
             {
                 case ProcessButtonStatus.Play:
                     break;
                 case ProcessButtonStatus.Install:
-                    await Download(token);
-                    await Install(token);
+                    //await Install(token);
                     break;
                 case ProcessButtonStatus.Update:
 
@@ -90,10 +124,32 @@ namespace GamesManager.Launcher.Models
             //_webClient.CancelAsync();
         }
 
-        private async Task Download(CancellationToken token)
+        private async Task Install(CancellationToken token)
         {
-            ProcessStatus = ProcessStatus.Downloading;
-            ProcessButtonStatus = ProcessButtonStatus.Cancel;
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            var latestVersion = await GetLatestVersionInfo();
+
+
+
+
+            Status = ProcessStatus.Installing;
+            ButtonStatus = ProcessButtonStatus.Cancel;
+            await Task.Delay(5000);
+        }
+
+        private async Task Download(CancellationToken token, VersionInfo versionInfo)
+        {
+            Status = ProcessStatus.Downloading;
+            ButtonStatus = ProcessButtonStatus.Cancel;
 
             var webClient = new WebClient();
             //webClient.DownloadFileCompleted += (s, e) => throw new NotImplementedException();
@@ -103,51 +159,45 @@ namespace GamesManager.Launcher.Models
             token.Register(() =>
             {
                 webClient.CancelAsync();
-                ProcessStatus = ProcessStatus.Waiting;
+                Status = ProcessStatus.Waiting;
             });
 
             try
             {
-                var latestVersion = await GetLatestVersionInfo();
-                await webClient.DownloadFileTaskAsync(latestVersion.Uri, Path.Combine("cache", latestVersion.FileName));
+                await webClient.DownloadFileTaskAsync(versionInfo.Uri, Path.Combine("cache", versionInfo.FileName));
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
-                ProcessStatus = ProcessStatus.Done;
-                ProcessButtonStatus = ProcessButtonStatus.Install;
+                Status = ProcessStatus.Done;
+                ButtonStatus = ProcessButtonStatus.Install;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                Status = ProcessStatus.Error;
+                throw;
             }
             finally
             {
+                webClient.DownloadProgressChanged -= WebClient_DownloadProgressChanged;
+                webClient.DownloadFileCompleted -= WebClient_DownloadFileCompleted;
                 webClient.Dispose();
             }
         }
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            DownloadProgressPercentage = e.ProgressPercentage;
+            ProgressPercentage = e.ProgressPercentage;
         }
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            ProcessStatus = ProcessStatus.Done;
+            Status = ProcessStatus.Done;
         }
 
 
-        private async Task Install(CancellationToken token)
+        private bool IsInstalled()
         {
-            ProcessStatus = ProcessStatus.Installing;
-            ProcessButtonStatus = ProcessButtonStatus.Cancel;
-            await Task.Delay(5000);
-        }
-
-
-        private async Task<bool> IsInstalled()
-        {
-            await Task.Delay(5000);
+            Task.Delay(5000);
             return false;
         }
 
@@ -168,9 +218,9 @@ namespace GamesManager.Launcher.Models
             }
         }
 
-        private async Task<LatestVersionInfo> GetLatestVersionInfo()
+        private async Task<VersionInfo> GetLatestVersionInfo()
         {
-            LatestVersionInfo latestVersionInfo = default;
+            VersionInfo latestVersionInfo = default;
 
             using (var client = new HttpClient())
             {
@@ -179,11 +229,12 @@ namespace GamesManager.Launcher.Models
                 var uri = new Uri(@$"https://localhost:5001/gamemanager/{GameName}");
                 var releaseJson = await client.GetStringAsync(uri);
 
-                latestVersionInfo = JsonConvert.DeserializeObject<LatestVersionInfo>(releaseJson);
+                latestVersionInfo = JsonConvert.DeserializeObject<VersionInfo>(releaseJson);
             }
 
             return latestVersionInfo;
         }
+
 
         //WebClient webClient;
 
