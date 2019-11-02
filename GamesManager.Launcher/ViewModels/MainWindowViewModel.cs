@@ -15,6 +15,7 @@ using GamesManager.Common.Classes;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models;
 using GamesManager.Launcher.Models.Enums;
+using GamesManager.Launcher.Models.Events;
 using GamesManager.Launcher.Properties;
 using GamesManager.Launcher.Views;
 using MVVM_Helper.Binding;
@@ -54,11 +55,17 @@ namespace GamesManager.Launcher.ViewModels
                 switch (value)
                 {
                     case ProcessStatus.Checking:
+                    case ProcessStatus.Waiting:
+                    case ProcessStatus.Playing:
                         IsEnableProcessButton = false;
                         IsIndeterminateDownloadBar = true;
+                        downloadBarValue = 0;
+                        break;
+                    case ProcessStatus.Installing:
+                        IsIndeterminateDownloadBar = true;
+                        downloadBarValue = 0;
                         break;
                     case ProcessStatus.Downloading:
-                    case ProcessStatus.Installing:
                     case ProcessStatus.Complete:
                     case ProcessStatus.Done:
                         IsEnableProcessButton = true;
@@ -146,80 +153,98 @@ namespace GamesManager.Launcher.ViewModels
             Header = MainHeader;
             DownloadBarValue = 0;
 
-            ProcessButtonCommand = new DelegateCommand(async param => await ProcessButtonClick());
-            SettingsButtonCommand = new DelegateCommand(param => Settings());
-            FeedbackButtonCommand = new DelegateCommand(param => Feedback());
+            ProcessButtonCommand = new DelegateCommand(param => ProcessButtonClick());
+            SettingsButtonCommand = new DelegateCommand(param => SettingsButtonClick());
+            FeedbackButtonCommand = new DelegateCommand(param => FeedbackButtonClick());
 
-            Task.Factory.StartNew(async () => await Start());
+            // Check Game State.
+            gameManager.StatusesChangedEvent += GameManager_StatusesChangedEvent;
+            Task.Run(async () => await gameManager.StartupChecks().ConfigureAwait(false));
         }
 
         #endregion
 
         #region Methods
 
-        private async Task Start()
+        private void GameManager_StatusesChangedEvent(GameManagerStatusesChangedEventArgs eventArgs)
         {
-            _tokenSource = new CancellationTokenSource();
-            _token = _tokenSource.Token;
+            if (ProcessStatus != eventArgs.Status)
+            {
+                ProcessStatus = eventArgs.Status;
+            }
 
-            await StartWatcher(_token);
-            await gameManager.StartupChecks();
+            if (ProcessButtonName != eventArgs.ButtonStatus)
+            {
+                ProcessButtonName = eventArgs.ButtonStatus;
+            }
+
+            if (DownloadBarValue != eventArgs.ProgressPercentage)
+            {
+                DownloadBarValue = eventArgs.ProgressPercentage;
+            }
+
+            Debug.WriteLine("Statuses changed Invoked!");
         }
 
-        private async Task ProcessButtonClick()
+        private void ProcessButtonClick()
         {
             if (processButtonStatus != ProcessButtonStatus.Cancel)
             {
-                await gameManager.StartProcess(_token);                
+                _tokenSource = new CancellationTokenSource();
+                _token = _tokenSource.Token;
+
+                Task.Run(async () => await StartProcess().ConfigureAwait(false), _tokenSource.Token);
             }
             else
             {
-                CancelProcesses();
+                try
+                {
+                    CancelProcesses();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
-            
         }
 
-        private void Settings()
+        private void SettingsButtonClick()
         {
-            
+
         }
 
-        private void Feedback()
+        private void FeedbackButtonClick()
         {
 
+        }
+
+        private async Task StartProcess()
+        {
+            try
+            {
+                await gameManager.StartProcess(_token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                //TODO: Handle error.
+                throw;
+            }
+            finally
+            {
+                _tokenSource.Dispose();
+            }
         }
 
         private void CancelProcesses()
         {
-            _tokenSource.Cancel();
-            gameManager.CancelProcesses();
-        }
-
-        private async Task StartWatcher(CancellationToken token)
-        {
-            try
+            if (_tokenSource != null)
             {
-                var task = await Task.Factory.StartNew(async () =>
-                {
-                    await Watcher(token);
-                });
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        private async Task Watcher(CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                ProcessStatus = gameManager.ProcessStatus;
-                ProcessButtonName = gameManager.ProcessButtonStatus;
-
-                Debug.WriteLine("Watcher is worked.");
-                await Task.Delay(100);
+                _tokenSource.Cancel();
             }
         }
 

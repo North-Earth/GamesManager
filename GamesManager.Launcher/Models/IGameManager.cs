@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using GamesManager.Common.Enums
+using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models.Events;
 
 namespace GamesManager.Launcher.Models
@@ -11,12 +11,10 @@ namespace GamesManager.Launcher.Models
 
         public delegate void StatusesChangedHandler(GameManagerStatusesChangedEventArgs eventArgs);
 
-        public event StatusesChangedHandler StatusesChanged;
+        public event StatusesChangedHandler StatusesChangedEvent;
 
         public Task StartupChecks();
 
         public Task StartProcess(CancellationToken token);
-
-        public void CancelProcesses();
     }
 }

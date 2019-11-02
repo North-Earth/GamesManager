@@ -3,7 +3,7 @@ using GamesManager.Common.Enums;
 
 namespace GamesManager.Common.Classes
 {
-    public class LatestVersionInfo
+    public class VersionInfo
     {
         public GameName Id { get; set; }
 
