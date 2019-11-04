@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using ControlzEx;
+using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models.Enums;
 using MaterialDesignThemes.Wpf;
 using MVVM_Helper.Binding;
@@ -18,10 +20,12 @@ namespace GamesManager.Launcher.ViewModels
         private string badgedText;
 
         private bool _isActive;
+        private bool isEnabledPlayButton;
 
         private PackIconKind playButtonIcon;
-        private PlayButtonStatus playButtonStatus;
-        private bool isPlayButtonEnabled;
+        private GameState playButtonStatus;
+        private bool isIndeterminateProgressBar;
+        private int progressBarValue;
 
         public string ProductName
         {
@@ -43,15 +47,36 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public bool IsPlayButtonEnabled
+        public int ProgressBarValue
         {
-            get => isPlayButtonEnabled;
+            get => progressBarValue;
             set
             {
-                isPlayButtonEnabled = value;
+                progressBarValue = value;
                 RaiseOnPropertyChanged();
             }
         }
+
+        public bool IsEnabledPlayButton
+        {
+            get => isEnabledPlayButton;
+            set
+            {
+                isEnabledPlayButton = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+        public bool IsIndeterminateProgressBar
+        {
+            get => isIndeterminateProgressBar;
+            set
+            {
+                isIndeterminateProgressBar = value;
+                ProgressBarValue = -1;
+                RaiseOnPropertyChanged();
+            }
+        }
+
         public bool IsActive
         {
             get => _isActive;
@@ -72,7 +97,7 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public PlayButtonStatus PlayButtonStatus
+        public GameState PlayButtonStatus
         {
             get => playButtonStatus;
             set
@@ -80,14 +105,17 @@ namespace GamesManager.Launcher.ViewModels
                 playButtonStatus = value;
                 switch (playButtonStatus)
                 {
-                    case PlayButtonStatus.Play:
+                    case GameState.Play:
                         PlayButtonIcon = PackIconKind.PlayCircleOutline;
                         break;
-                    case PlayButtonStatus.Install:
-                    case PlayButtonStatus.Update:
+                    case GameState.Update:
+                        BadgedText = updateStatus;
                         PlayButtonIcon = PackIconKind.Download;
                         break;
-                    case PlayButtonStatus.Cancel:
+                    case GameState.Install:
+                        PlayButtonIcon = PackIconKind.Download;
+                        break;
+                    case GameState.Cancel:
                         PlayButtonIcon = PackIconKind.StopCircleOutline;
                         break;
                     default:
@@ -108,8 +136,18 @@ namespace GamesManager.Launcher.ViewModels
         {
             ProductName = productName;
             IsActive = isActive;
-            BadgedText = updateStatus;
-            PlayButtonStatus = PlayButtonStatus.Install;
+            PlayButtonStatus = GameState.Install;
+
+            var task = Task.Run(() =>
+            {
+                for (int i = 0; i < 101; i++)
+                {
+                    ProgressBarValue = i;
+                    Task.Delay(250).Wait();
+                }
+                PlayButtonStatus = GameState.Update;
+                IsIndeterminateProgressBar = true;
+            });
         }
 
         #endregion

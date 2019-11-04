@@ -4,9 +4,11 @@ using System.Text;
 
 namespace GamesManager.Common.Enums
 {
-    public enum GameName
+    public enum GameState
     {
-        Roll_a_Ball = 1,
-        Roll_a_Ball_Online = 2,
+        Play = 0,
+        Install = 1,
+        Update = 2,
+        Cancel = 3,
     }
 }
