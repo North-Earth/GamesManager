@@ -11,20 +11,17 @@
         MinHeight="600" MinWidth="1024"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
+    
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
-            <RowDefinition Height="55"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="90"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-
-        <!--<materialDesign:Card Padding="32" Margin="15" Grid.Row="1">
-            <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center">Roll a Ball</TextBlock>
-        </materialDesign:Card>-->
 
         <Grid Grid.Column="0" Grid.Row="0">
             <materialDesign:ColorZone 
@@ -46,58 +43,13 @@
             </materialDesign:ColorZone>
         </Grid>
 
-        <ContentControl Grid.Row="2" Content="{Binding InformationControl, UpdateSourceTrigger=PropertyChanged}" />
-
-        <Grid Grid.Row="1">
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" 
-                             Margin="5" IsChecked="True" Content="Roll a Ball" />
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" 
-                             Margin="5" IsChecked="False" Content="RB Online" 
-                             IsEnabled="False"/>
-            </StackPanel>
+        <Grid Grid.Column="0" Grid.Row="1" Margin="15">
+            <UserControl Content="{Binding UserControl}"/>
+            <!-- TODO: Main UI -->
         </Grid>
 
-        <Grid Grid.Column="0" Grid.Row="3" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="150"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="0" Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="{Binding ProcessStatus}" 
-                           HorizontalAlignment="Left" 
-                           VerticalAlignment="Bottom"/>
-                <TextBlock Grid.Row="0" 
-                           HorizontalAlignment="Right" 
-                           VerticalAlignment="Bottom">
-                    <Run Text="{Binding DownloadBarValue, UpdateSourceTrigger=PropertyChanged}" />
-                    <Run Text="%"/>
-                </TextBlock>
-                <ProgressBar Value="{Binding DownloadBarValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             IsIndeterminate="{Binding IsIndeterminateDownloadBar}"
-                             Grid.Row="1" />
-                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                       TextAlignment="Left" VerticalAlignment="Bottom" 
-                       Text="Version 0.0.1" Grid.Row="2"/>
-            </Grid>
-
-            <Grid Grid.Column="1">
-                <Button Style="{StaticResource MaterialDesignRaisedButton}" 
-                        materialDesign:ButtonAssist.CornerRadius="10"
-                        Height="45" 
-                        Command="{Binding ProcessButtonCommand}" 
-                        IsEnabled="{Binding IsEnableProcessButton, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock Text="{Binding ProcessButtonName}" />
-                    <!--<materialDesign:PackIcon Kind="Play" />-->
-                </Button>
-            </Grid>
+        <Grid Grid.Column="0" Grid.Row="2" Background="Cyan">
+            <!-- TODO: Information Bar -->
         </Grid>
 
     </Grid>

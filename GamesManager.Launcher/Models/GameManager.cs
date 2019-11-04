@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Resources;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GamesManager.Common.Classes;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models.Enums;
 using GamesManager.Launcher.Models.Events;
-using GamesManager.Launcher.Properties;
 using Newtonsoft.Json;
 
 namespace GamesManager.Launcher.Models
@@ -27,7 +22,7 @@ namespace GamesManager.Launcher.Models
         private const string AppsPath = "apps";
 
         private ProcessStatus Status { get; set; }
-        private ProcessButtonStatus ButtonStatus { get; set; }
+        private PlayButtonStatus ButtonStatus { get; set; }
 
         private int progressPercentage;
         private int ProgressPercentage
@@ -43,7 +38,7 @@ namespace GamesManager.Launcher.Models
         private VersionInfo LatestVersionInfo { get; set; }
 
         public GameName GameName { get; }
-       
+
         public event IGameManager.StatusesChangedHandler StatusesChangedEvent;
 
         #endregion
@@ -59,19 +54,19 @@ namespace GamesManager.Launcher.Models
         private void InvokeStatusesChangedHandler()
             => StatusesChangedEvent(new GameManagerStatusesChangedEventArgs(Status, ButtonStatus, ProgressPercentage));
 
-        private void UpdateStatus(ProcessStatus status, ProcessButtonStatus buttonStatus)
+        private void UpdateStatus(ProcessStatus status, PlayButtonStatus buttonStatus)
         {
             Status = status;
             ButtonStatus = buttonStatus;
             InvokeStatusesChangedHandler();
         }
 
-        private void ResetProgressPercentage() 
+        private void ResetProgressPercentage()
             => ProgressPercentage = 0;
 
         public async Task StartupChecks()
         {
-            UpdateStatus(ProcessStatus.Checking, ProcessButtonStatus.Cancel);
+            UpdateStatus(ProcessStatus.Checking, PlayButtonStatus.Cancel);
 
             try
             {
@@ -81,16 +76,16 @@ namespace GamesManager.Launcher.Models
                 {
                     if (IsUpdated())
                     {
-                        UpdateStatus(ProcessStatus.Complete, ProcessButtonStatus.Play);
+                        UpdateStatus(ProcessStatus.Complete, PlayButtonStatus.Play);
                     }
                     else
                     {
-                        UpdateStatus(ProcessStatus.Done, ProcessButtonStatus.Update);
+                        UpdateStatus(ProcessStatus.Done, PlayButtonStatus.Update);
                     }
                 }
                 else
                 {
-                    UpdateStatus(ProcessStatus.Done, ProcessButtonStatus.Install);
+                    UpdateStatus(ProcessStatus.Done, PlayButtonStatus.Install);
                 }
             }
             catch (Exception)
@@ -106,13 +101,13 @@ namespace GamesManager.Launcher.Models
             {
                 switch (ButtonStatus)
                 {
-                    case ProcessButtonStatus.Play:
+                    case PlayButtonStatus.Play:
                         await Play();
                         break;
-                    case ProcessButtonStatus.Install:
+                    case PlayButtonStatus.Install:
                         await Install(token).ConfigureAwait(false);
                         break;
-                    case ProcessButtonStatus.Update:
+                    case PlayButtonStatus.Update:
                         await Update(token).ConfigureAwait(false);
                         break;
                     default:
@@ -129,29 +124,29 @@ namespace GamesManager.Launcher.Models
         {
             try
             {
-                UpdateStatus(ProcessStatus.Checking, ProcessButtonStatus.Cancel);
+                UpdateStatus(ProcessStatus.Checking, PlayButtonStatus.Cancel);
 
                 LatestVersionInfo = await GetLatestVersionInfo().ConfigureAwait(false);
 
-                UpdateStatus(ProcessStatus.Downloading, ProcessButtonStatus.Cancel);
+                UpdateStatus(ProcessStatus.Downloading, PlayButtonStatus.Cancel);
 
                 await Task.Run(async () => await DownloadGame(LatestVersionInfo, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
-                UpdateStatus(ProcessStatus.Installing, ProcessButtonStatus.Cancel);
+                UpdateStatus(ProcessStatus.Installing, PlayButtonStatus.Cancel);
 
                 await Task.Run(async () => await InstallGame(LatestVersionInfo, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
-                UpdateStatus(ProcessStatus.Complete, ProcessButtonStatus.Play);
+                UpdateStatus(ProcessStatus.Complete, PlayButtonStatus.Play);
             }
             catch (OperationCanceledException)
             {
-                UpdateStatus(ProcessStatus.Done, ProcessButtonStatus.Install);
+                UpdateStatus(ProcessStatus.Done, PlayButtonStatus.Install);
                 ResetProgressPercentage();
                 throw;
             }
             catch (Exception)
             {
-                UpdateStatus(ProcessStatus.Error, ProcessButtonStatus.Install);
+                UpdateStatus(ProcessStatus.Error, PlayButtonStatus.Install);
                 throw;
             }
         }
@@ -165,7 +160,7 @@ namespace GamesManager.Launcher.Models
         {
             try
             {
-                UpdateStatus(ProcessStatus.Playing, ProcessButtonStatus.Play);
+                UpdateStatus(ProcessStatus.Playing, PlayButtonStatus.Play);
 
                 var gameName = GameName.ToString().Replace('_', ' ');
                 var path = Path.Combine(AppsPath, gameName, gameName + ".exe");
@@ -174,7 +169,7 @@ namespace GamesManager.Launcher.Models
 
                 proc.WaitForExit();
 
-                UpdateStatus(ProcessStatus.Complete, ProcessButtonStatus.Play);
+                UpdateStatus(ProcessStatus.Complete, PlayButtonStatus.Play);
             }
             catch (Exception)
             {
@@ -202,7 +197,7 @@ namespace GamesManager.Launcher.Models
                     var path = Path.Combine(CachePath, versionInfo.FileName);
 
                     if (!Directory.Exists(CachePath))
-                    { 
+                    {
                         Directory.CreateDirectory(CachePath);
                     }
 
@@ -236,7 +231,7 @@ namespace GamesManager.Launcher.Models
             try
             {
                 var arhivePath = Path.Combine(CachePath, versionInfo.FileName);
-                
+
                 if (!Directory.Exists(AppsPath))
                 {
                     Directory.CreateDirectory(AppsPath);
@@ -314,6 +309,6 @@ namespace GamesManager.Launcher.Models
             return latestVersionInfo;
         }
 
-        #endregio
+        #endregion
     }
 }

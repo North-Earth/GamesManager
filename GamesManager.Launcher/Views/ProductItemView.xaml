@@ -7,16 +7,17 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewmodels="clr-namespace:GamesManager.Launcher.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="640">
+             d:DesignHeight="100" d:DesignWidth="640"
+             MinHeight="100">
     
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <viewmodels:ProductItemViewModel/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     
-    <Grid Background="White">
+    <Grid Background="White" Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="70"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -25,17 +26,21 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Column="0" Grid.Row="0">
-            <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center"
-                       Text="Product Name"/>
+            <materialDesign:Badged 
+                Badge="{Binding BadgedText}" BadgeColorZoneMode="PrimaryMid"
+                VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
+                           Text="{Binding ProductName}" Margin="7"/>
+            </materialDesign:Badged>
         </Grid>
 
         <Grid Grid.Column="1" Grid.Row="0">
             <Button Style="{StaticResource MaterialDesignIconButton}" 
                     Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
-                    HorizontalAlignment="Center" 
-                    Width="65" Height="65">
-                <materialDesign:PackIcon Kind="Play" Height="30" Width="30" />
+                    HorizontalAlignment="Center" Height="45" Width="45"
+                    IsEnabled="{Binding IsPlayButtonEnabled, UpdateSourceTrigger=PropertyChanged}">
+                <materialDesign:PackIcon Kind="{Binding PlayButtonIcon}" 
+                                         Height="25" Width="25" />
             </Button>
         </Grid>
 

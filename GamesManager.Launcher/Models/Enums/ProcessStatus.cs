@@ -11,13 +11,4 @@
         Waiting = 6,
         Playing = 7
     }
-
-    public enum ProcessButtonStatus
-    {
-        Play = 0,
-        Install = 1,
-        Update = 2,
-        Cancel = 3,
-        Check = 4
-    }
 }

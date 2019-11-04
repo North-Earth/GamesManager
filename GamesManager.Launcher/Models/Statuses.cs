@@ -9,7 +9,7 @@ namespace GamesManager.Launcher.Models
     {
         public ProcessStatus ProcessStatus { get; set; }
 
-        public ProcessButtonStatus ProcessButtonStatus { get; set; }
+        public PlayButtonStatus ProcessButtonStatus { get; set; }
 
         public int DownloadProgressPercentage { get; set; }
     }

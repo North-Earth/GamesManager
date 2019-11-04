@@ -9,11 +9,11 @@ namespace GamesManager.Launcher.Models.Events
     {
         public readonly ProcessStatus Status;
 
-        public readonly ProcessButtonStatus ButtonStatus;
+        public readonly PlayButtonStatus ButtonStatus;
 
         public readonly int ProgressPercentage;
 
-        public GameManagerStatusesChangedEventArgs(ProcessStatus status, ProcessButtonStatus buttonStatus, int progressPercentage)
+        public GameManagerStatusesChangedEventArgs(ProcessStatus status, PlayButtonStatus buttonStatus, int progressPercentage)
         {
             Status = status;
             ButtonStatus = buttonStatus;

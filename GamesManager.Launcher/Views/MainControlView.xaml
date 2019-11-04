@@ -23,9 +23,17 @@
         <Grid Grid.Column="0" Grid.Row="0">
 
         </Grid>
-        
-        <Grid Grid.Column="1" Grid.Row="0">
 
+        <Grid Grid.Column="1" Grid.Row="0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding ProductItemViews}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" Margin="15" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
         
     </Grid>

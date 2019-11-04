@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using GamesManager.Common.Classes;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models;
 using GamesManager.Launcher.Models.Enums;
 using GamesManager.Launcher.Models.Events;
-using GamesManager.Launcher.Properties;
 using GamesManager.Launcher.Views;
 using MVVM_Helper.Binding;
 using MVVM_Helper.Commands;
@@ -39,11 +32,22 @@ namespace GamesManager.Launcher.ViewModels
         private bool isIndeterminateDownloadBar;
 
         private ProcessStatus processStatus;
-        private ProcessButtonStatus processButtonStatus;
+        private PlayButtonStatus processButtonStatus;
         private UserControl informationControl;
 
         private CancellationTokenSource _tokenSource;
         private CancellationToken _token;
+        private MainControlView userControl;
+
+        public MainControlView UserControl
+        {
+            get => userControl;
+            set
+            {
+                userControl = value;
+                RaiseOnPropertyChanged();
+            }
+        }
 
         public string Header { get => header; set => header = value; }
 
@@ -110,7 +114,7 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public ProcessButtonStatus ProcessButtonName
+        public PlayButtonStatus ProcessButtonName
         {
             get => processButtonStatus;
             set
@@ -142,24 +146,26 @@ namespace GamesManager.Launcher.ViewModels
 
         public MainWindowViewModel()
         {
-            gameManagers = new List<IGameManager>
-            {
-                new GameManager(GameName.Roll_a_Ball)
-            };
+            UserControl = new MainControlView();
 
-            /*TEST*/
-            gameManager = gameManagers.First();
+            //gameManagers = new List<IGameManager>
+            //{
+            //    new GameManager(GameName.Roll_a_Ball)
+            //};
 
-            Header = MainHeader;
-            DownloadBarValue = 0;
+            ///*TEST*/
+            //gameManager = gameManagers.First();
 
-            ProcessButtonCommand = new DelegateCommand(param => ProcessButtonClick());
-            SettingsButtonCommand = new DelegateCommand(param => SettingsButtonClick());
-            FeedbackButtonCommand = new DelegateCommand(param => FeedbackButtonClick());
+            //Header = MainHeader;
+            //DownloadBarValue = 0;
 
-            // Check Game State.
-            gameManager.StatusesChangedEvent += GameManager_StatusesChangedEvent;
-            Task.Run(async () => await gameManager.StartupChecks().ConfigureAwait(false));
+            //ProcessButtonCommand = new DelegateCommand(param => ProcessButtonClick());
+            //SettingsButtonCommand = new DelegateCommand(param => SettingsButtonClick());
+            //FeedbackButtonCommand = new DelegateCommand(param => FeedbackButtonClick());
+
+            //// Check Game State.
+            //gameManager.StatusesChangedEvent += GameManager_StatusesChangedEvent;
+            //Task.Run(async () => await gameManager.StartupChecks().ConfigureAwait(false));
         }
 
         #endregion
@@ -188,7 +194,7 @@ namespace GamesManager.Launcher.ViewModels
 
         private void ProcessButtonClick()
         {
-            if (processButtonStatus != ProcessButtonStatus.Cancel)
+            if (processButtonStatus != PlayButtonStatus.Cancel)
             {
                 _tokenSource = new CancellationTokenSource();
                 _token = _tokenSource.Token;

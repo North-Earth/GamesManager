@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GamesManager.Launcher.ViewModels;
 
 namespace GamesManager.Launcher.Views
 {
@@ -18,9 +19,10 @@ namespace GamesManager.Launcher.Views
     /// </summary>
     public partial class ProductItemView : UserControl
     {
-        public ProductItemView()
+        public ProductItemView(string prodctName, bool isActive = true)
         {
             InitializeComponent();
+            DataContext = new ProductItemViewModel(prodctName, isActive);
         }
     }
 }
