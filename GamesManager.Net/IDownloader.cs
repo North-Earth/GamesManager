@@ -1,7 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using GamesManager.Common.Events;
 
 namespace GamesManager.Net
 {
@@ -9,9 +10,9 @@ namespace GamesManager.Net
     {
         #region Fields
 
-        public delegate void StatusChangedHandler(OperationStatusChangedEventArgs eventArgs);
+        public event AsyncCompletedEventHandler AsyncCompletedEventHandler;
 
-        public event StatusChangedHandler StatusChangedEvent;
+        public event DownloadProgressChangedEventHandler DownloadProgressChangedEventHandler;
 
         #endregion
 

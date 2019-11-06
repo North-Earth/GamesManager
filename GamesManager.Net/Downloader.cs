@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,21 +12,9 @@ namespace GamesManager.Net
     {
         #region Fields
 
-        private int _progressPercentage;
+        public event AsyncCompletedEventHandler AsyncCompletedEventHandler;
 
-        private OperationState OperationState { get; set; }
-        private GameState GameState { get; set; }
-        private int ProgressPercentage
-        {
-            get => _progressPercentage;
-            set
-            {
-                _progressPercentage = value;
-                InvokeStatusChangedEvent();
-            }
-        }
-
-        public event IDownloader.StatusChangedHandler StatusChangedEvent;
+        public event DownloadProgressChangedEventHandler DownloadProgressChangedEventHandler;
 
         #endregion
 
@@ -37,8 +26,8 @@ namespace GamesManager.Net
             {
                 var wc = new WebClient();
 
-                wc.DownloadFileCompleted += WebCLient_DownloadFileCompleted;
-                wc.DownloadProgressChanged += WebCLient_DownloadProgressChanged;
+                wc.DownloadFileCompleted += AsyncCompletedEventHandler;
+                wc.DownloadProgressChanged += DownloadProgressChangedEventHandler;
 
                 token.Register(() => wc.CancelAsync());
 
@@ -48,29 +37,6 @@ namespace GamesManager.Net
             {
                 throw;
             }
-        }
-
-        private void ChangeStatus(OperationState operationState, GameState gameState)
-        {
-            OperationState = operationState;
-            GameState = gameState;
-
-            InvokeStatusChangedEvent();
-        }
-
-        private void InvokeStatusChangedEvent()
-            => StatusChangedEvent(new OperationStatusChangedEventArgs(OperationState, GameState, ProgressPercentage));
-
-        private void WebCLient_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            OperationState = OperationState.Completed;
-            InvokeStatusChangedEvent();
-        }
-
-        private void WebCLient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            ProgressPercentage = e.ProgressPercentage;
-            //TODO: Send file size.
         }
 
         #endregion
