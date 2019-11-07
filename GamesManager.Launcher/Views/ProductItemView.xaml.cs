@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GamesManager.Common.Enums;
 using GamesManager.Launcher.ViewModels;
 
 namespace GamesManager.Launcher.Views
@@ -19,10 +20,11 @@ namespace GamesManager.Launcher.Views
     /// </summary>
     public partial class ProductItemView : UserControl
     {
-        public ProductItemView(string prodctName, bool isActive = true)
+        public ProductItemView(GameName gameName)
         {
+            DataContext = new ProductItemViewModel(gameName);
+
             InitializeComponent();
-            DataContext = new ProductItemViewModel(prodctName, isActive);
         }
     }
 }

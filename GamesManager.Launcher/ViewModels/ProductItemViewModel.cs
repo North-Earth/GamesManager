@@ -4,9 +4,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ControlzEx;
 using GamesManager.Common.Enums;
+using GamesManager.Common.Events;
+using GamesManager.Launcher.Models;
 using GamesManager.Launcher.Models.Enums;
 using MaterialDesignThemes.Wpf;
 using MVVM_Helper.Binding;
+using MVVM_Helper.Commands;
 
 namespace GamesManager.Launcher.ViewModels
 {
@@ -16,26 +19,18 @@ namespace GamesManager.Launcher.ViewModels
 
         private const string updateStatus = "Update";
 
-        private string _productName;
+        public IGameManager GameManager { get; }
+
+        private PackIconKind playButtonIcon;
+        private GameState playButtonStatus;
+
         private string badgedText;
 
         private bool _isActive;
         private bool isEnabledPlayButton;
-
-        private PackIconKind playButtonIcon;
-        private GameState playButtonStatus;
         private bool isIndeterminateProgressBar;
-        private int progressBarValue;
 
-        public string ProductName
-        {
-            get => _productName;
-            set
-            {
-                _productName = value;
-                RaiseOnPropertyChanged();
-            }
-        }
+        private int progressBarValue;
 
         public string BadgedText
         {
@@ -126,33 +121,32 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
+        public DelegateCommand PlayButtonCommand { get; set; }
+
         #endregion
 
         #region Constructors
 
-        public ProductItemViewModel() { }
-
-        public ProductItemViewModel(string productName, bool isActive = true)
+        public ProductItemViewModel(GameName gameName) 
         {
-            ProductName = productName;
-            IsActive = isActive;
-            PlayButtonStatus = GameState.Install;
+            GameManager = new GameManager(gameName);
+            GameManager.StatusChangedEvent += GameManager_StatusChangedEvent;
+            GameManager.CheckСondition();
 
-            var task = Task.Run(() =>
-            {
-                for (int i = 0; i < 101; i++)
-                {
-                    ProgressBarValue = i;
-                    Task.Delay(250).Wait();
-                }
-                PlayButtonStatus = GameState.Update;
-                IsIndeterminateProgressBar = true;
-            });
+            PlayButtonCommand = new DelegateCommand(param => PlayButtonClick());
+
         }
 
         #endregion
 
         #region Methods
+
+        public void PlayButtonClick() => GameManager.StartProcess();
+
+        private void GameManager_StatusChangedEvent(OperationStatusChangedEventArgs eventArgs)
+        {
+            PlayButtonStatus = eventArgs.GameState;
+        }
 
         #endregion
     }

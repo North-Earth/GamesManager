@@ -7,10 +7,9 @@ namespace GamesManager.Common.Enums
     public enum OperationState
     {
         Canceled = 0,
-        Checking = 1,
-        Downloading = 2,
-        Installing = 3,
-        Completed = 4,
-        Playing = 5
+        Completed = 1,
+        Playing = 2,
+        Downloading = 3,
+        Installing = 4
     }
 }

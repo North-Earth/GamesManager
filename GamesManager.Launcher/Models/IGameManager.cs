@@ -1,20 +1,33 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using GamesManager.Common.Enums;
+using GamesManager.Common.Events;
 using GamesManager.Launcher.Models.Events;
 
 namespace GamesManager.Launcher.Models
 {
     public interface IGameManager
     {
+        #region Fields
+
+        public string Name { get; }
+
         public GameName GameName { get; }
 
-        public delegate void StatusesChangedHandler(GameManagerStatusesChangedEventArgs eventArgs);
+        public delegate void StatusChangedHandler(OperationStatusChangedEventArgs eventArgs);
 
-        public event StatusesChangedHandler StatusesChangedEvent;
+        public event StatusChangedHandler StatusChangedEvent;
 
-        public Task StartupChecks();
+        #endregion
 
-        public Task StartProcess(CancellationToken token);
+        #region Methods
+
+        public void CheckСondition();
+
+        public void StartProcess();
+
+        #endregion
+
+
     }
 }

@@ -11,7 +11,7 @@ namespace GamesManager.Common.Events
 
         public int ProgressPercentage { get; }
 
-        public OperationStatusChangedEventArgs(OperationState operationState, GameState gameState, int progressPercentage)
+        public OperationStatusChangedEventArgs(OperationState operationState, GameState gameState, int progressPercentage = 0)
         {
             OperationState = operationState;
             GameState = gameState;

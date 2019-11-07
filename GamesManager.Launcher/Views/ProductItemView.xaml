@@ -39,7 +39,7 @@
                 Badge="{Binding BadgedText}" BadgeColorZoneMode="PrimaryMid"
                 VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
-                           Text="{Binding ProductName}" Margin="7"/>
+                           Text="{Binding GameManager.Name}" Margin="7"/>
             </materialDesign:Badged>
         </Grid>
 
@@ -47,6 +47,7 @@
             <Button Style="{StaticResource MaterialDesignIconButton}" 
                     Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                     HorizontalAlignment="Center" Height="45" Width="45"
+                    Command="{Binding PlayButtonCommand}"
                     IsEnabled="{Binding IsPlayButtonEnabled, UpdateSourceTrigger=PropertyChanged}">
                 <materialDesign:PackIcon Kind="{Binding PlayButtonIcon}" 
                                          Height="25" Width="25" />
