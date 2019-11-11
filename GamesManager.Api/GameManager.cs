@@ -34,13 +34,13 @@ namespace GamesManager.Api
 
         #region Methods
 
-        public async Task<LatestVersionInfo> GetLatestVersionAsync(GameName gameName, GamePlatform gamePlatform)
+        public async Task<VersionInfo> GetLatestVersionAsync(GameName gameName, GamePlatform gamePlatform)
         {
             var release = await GetReleaseAsync(gameName).ConfigureAwait(false);
             var asset = release.assets.Where(a => a.name.Contains(value: gamePlatform.ToString(), StringComparison.Ordinal))
                 .SingleOrDefault();
 
-            return new LatestVersionInfo()
+            return new VersionInfo()
             {
                 Id = gameName,
                 FileName = asset.name,
