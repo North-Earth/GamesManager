@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GamesManager.Net
 {
-    public interface IDownloader
+    public interface IWebClient
     {
         #region Fields
 

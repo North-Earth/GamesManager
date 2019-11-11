@@ -8,7 +8,7 @@ using GamesManager.Common.Events;
 
 namespace GamesManager.Net
 {
-    public class Downloader : IDownloader
+    public class WebClient : IWebClient
     {
         #region Fields
 
@@ -24,7 +24,7 @@ namespace GamesManager.Net
         {
             try
             {
-                var wc = new WebClient();
+                var wc = new System.Net.WebClient();
 
                 wc.DownloadFileCompleted += AsyncCompletedEventHandler;
                 wc.DownloadProgressChanged += DownloadProgressChangedEventHandler;
@@ -32,6 +32,11 @@ namespace GamesManager.Net
                 token.Register(() => wc.CancelAsync());
 
                 await wc.DownloadFileTaskAsync(address, fileName);
+
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
             }
             catch (Exception)
             {
