@@ -229,7 +229,7 @@ namespace GamesManager.Launcher.ViewModels
         {
             try
             {
-                await gameManager.StartProcess(_token).ConfigureAwait(false);
+                //await gameManager.StartProcess(_token).ConfigureAwait(false);
             }
             catch (OperationCanceledException ex)
             {
