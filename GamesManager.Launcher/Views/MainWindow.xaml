@@ -11,11 +11,11 @@
         MinHeight="600" MinWidth="1024"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
-    
+
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
@@ -48,7 +48,7 @@
             <!-- TODO: Main UI -->
         </Grid>
 
-        <Grid Grid.Column="0" Grid.Row="2" Background="Cyan">
+        <Grid Grid.Column="0" Grid.Row="2">
             <!-- TODO: Information Bar -->
         </Grid>
 

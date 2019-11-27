@@ -1,36 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
-using ControlzEx;
 using GamesManager.Common.Enums;
-using GamesManager.Common.Events;
 using GamesManager.Launcher.Models;
 using GamesManager.Launcher.Models.Enums;
+using GamesManager.Launcher.Models.Events;
 using MaterialDesignThemes.Wpf;
 using MVVM_Helper.Binding;
 using MVVM_Helper.Commands;
 
 namespace GamesManager.Launcher.ViewModels
 {
-    public class ProductItemViewModel : ObservableObject
+    public class ProductItemViewModel : ObservableObject, IDisposable
     {
-        #region Fields
+        private const string UPDATE_STATUS = "Update"; // TODO: Get from resoures.
 
-        private const string updateStatus = "Update";
+        #region Fields
 
         public IGameManager GameManager { get; }
 
-        private PackIconKind playButtonIcon;
-        private GameState playButtonStatus;
-
-        private string badgedText;
-
-        private bool _isActive;
         private bool isEnabledPlayButton;
-        private bool isIndeterminateProgressBar;
-
         private int progressBarValue;
+        private bool isIndeterminateProgressBar;
+        private string badgedText;
+        private PackIconKind playButtonIcon;
+        private PlayButtonState playButtonStatus;
+        private OperationState operationState;
 
         public string BadgedText
         {
@@ -52,15 +47,6 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public bool IsEnabledPlayButton
-        {
-            get => isEnabledPlayButton;
-            set
-            {
-                isEnabledPlayButton = value;
-                RaiseOnPropertyChanged();
-            }
-        }
         public bool IsIndeterminateProgressBar
         {
             get => isIndeterminateProgressBar;
@@ -72,12 +58,12 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public bool IsActive
+        public bool IsEnabledPlayButton
         {
-            get => _isActive;
+            get => isEnabledPlayButton;
             set
             {
-                _isActive = value;
+                isEnabledPlayButton = value;
                 RaiseOnPropertyChanged();
             }
         }
@@ -92,32 +78,77 @@ namespace GamesManager.Launcher.ViewModels
             }
         }
 
-        public GameState PlayButtonStatus
+        public PlayButtonState PlayButtonStatus
         {
             get => playButtonStatus;
             set
             {
                 playButtonStatus = value;
+
                 switch (playButtonStatus)
                 {
-                    case GameState.Play:
+                    case PlayButtonState.Play:
                         PlayButtonIcon = PackIconKind.PlayCircleOutline;
                         break;
-                    case GameState.Update:
-                        BadgedText = updateStatus;
+                    case PlayButtonState.Install:
                         PlayButtonIcon = PackIconKind.Download;
                         break;
-                    case GameState.Install:
+                    case PlayButtonState.Update:
+                        BadgedText = UPDATE_STATUS;
                         PlayButtonIcon = PackIconKind.Download;
                         break;
-                    case GameState.Cancel:
+                    case PlayButtonState.Cancel:
                         PlayButtonIcon = PackIconKind.StopCircleOutline;
                         break;
-                    default:
+                    case PlayButtonState.Wait:
+                        PlayButtonIcon = PackIconKind.TimerSand;
                         break;
                 }
 
                 RaiseOnPropertyChanged();
+            }
+        }
+
+        public OperationState OperationState
+        {
+            get => operationState;
+            set
+            {
+                operationState = value;
+                switch (operationState)
+                {
+                    case OperationState.Completed:
+                        ProgressBarValue = 0;
+                        IsIndeterminateProgressBar = false;
+                        IsEnabledPlayButton = true;
+                        break;
+                    case OperationState.Playing:
+                        ProgressBarValue = -1;
+                        IsIndeterminateProgressBar = true;
+                        IsEnabledPlayButton = false;
+                        break;
+                    case OperationState.Downloading:
+                        IsIndeterminateProgressBar = false;
+                        IsEnabledPlayButton = true;
+                        break;
+                    case OperationState.Installing:
+                        ProgressBarValue = -1;
+                        IsIndeterminateProgressBar = true;
+                        IsEnabledPlayButton = true;
+                        break;
+                    case OperationState.Canceling:
+                        ProgressBarValue = -1;
+                        IsIndeterminateProgressBar = true;
+                        IsEnabledPlayButton = false;
+                        break;
+                    case OperationState.Checking:
+                        ProgressBarValue = -1;
+                        IsIndeterminateProgressBar = true;
+                        IsEnabledPlayButton = false;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -127,25 +158,45 @@ namespace GamesManager.Launcher.ViewModels
 
         #region Constructors
 
-        public ProductItemViewModel(GameName gameName) 
+        public ProductItemViewModel() { throw new NotImplementedException(); }
+
+        public ProductItemViewModel(GameName gameName)
         {
             GameManager = new GameManager(gameName);
-            GameManager.StatusChangedEvent += GameManager_StatusChangedEvent;
-            GameManager.CheckСondition();
+            GameManager.DownloadProgressChanged += GameManager_DownloadProgressChangedEventHandler;
+            GameManager.OperationStatusChanged += GameManager_OperationStatusChanged;
 
             PlayButtonCommand = new DelegateCommand(param => PlayButtonClick());
 
+            Task.Run(() => GameManager.CheckСondition());
         }
+
 
         #endregion
 
         #region Methods
 
-        public void PlayButtonClick() => GameManager.StartProcess();
-
-        private void GameManager_StatusChangedEvent(OperationStatusChangedEventArgs eventArgs)
+        private void PlayButtonClick()
         {
-            PlayButtonStatus = eventArgs.GameState;
+            GameManager.StartProcess();
+        }
+
+        private void GameManager_DownloadProgressChangedEventHandler(object sender, DownloadProgressChangedEventArgs args)
+        {
+            if (ProgressBarValue != args.ProgressPercentage && OperationState != OperationState.Canceling)
+            {
+                ProgressBarValue = args.ProgressPercentage;
+            }
+        }
+        private void GameManager_OperationStatusChanged(object sender, OperationStatusChangedEventArgs args)
+        {
+            PlayButtonStatus = args.GameState;
+            OperationState = args.OperationState;
+        }
+
+        public void Dispose()
+        {
+            GameManager.DownloadProgressChanged -= GameManager_DownloadProgressChangedEventHandler;
         }
 
         #endregion

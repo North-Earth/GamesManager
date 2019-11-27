@@ -1,19 +1,14 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using GamesManager.Common.Classes;
 using GamesManager.Common.Enums;
-using GamesManager.Common.Events;
 using GamesManager.Launcher.Models.Enums;
 using GamesManager.Launcher.Models.Events;
-using GamesManager.Net;
-using Newtonsoft.Json;
 
 namespace GamesManager.Launcher.Models
 {
@@ -21,25 +16,24 @@ namespace GamesManager.Launcher.Models
     {
         #region Fields
 
-        private const string CachePath = "cache";
-        private const string AppsPath = "apps";
-
-        private Uri VersionUri { get; }
-
-        public event IGameManager.StatusChangedHandler StatusChangedEvent;
-
-        private IWebClient WebClient { get; }
-        private IRestClient RestClient { get; }
-
-        private CancellationTokenSource TokenSource;
-
-        private OperationState OperationState { get; set; }
-
-        private GameState GameState { get; set; }
+        public GameName GameName { get; }
 
         public string Name { get; }
 
-        public GameName GameName { get; }
+        public OperationState OperationState { get; private set; }
+        public PlayButtonState PlayButtonState { get; private set; }
+
+        public event DownloadProgressChangedEventHandler DownloadProgressChanged;
+
+        public event OperationStatusChangedEventHandler OperationStatusChanged;
+
+        private IRestClient RestClient;
+
+        private IWebClient WebClient;
+
+        private CancellationTokenSource TokenSource;
+
+        private Uri VersionUri { get; }
 
         #endregion
 
@@ -48,13 +42,15 @@ namespace GamesManager.Launcher.Models
         public GameManager(GameName gameName)
         {
             GameName = gameName;
+            Name = DirectoryManager.ConvertEnumToName(GameName);
 
-            Name = ConvertEnumToName(GameName);
+            //TODO: Add DI.
+            RestClient = new RestClient();
+            WebClient = new WebClient();
 
-            //TODO: Add Dependency Injection.
-            WebClient = new Net.WebClient();
-            RestClient = new Net.RestClient();
-            VersionUri = new Uri(@$"https://localhost:5001/gamemanager/{GameName}"); //TODO: Using resourse or config.
+            VersionUri = new Uri($@"https://localhost:5001/gamemanager/{GameName}"); //TODO: Using resourse or config.
+
+            DirectoryManager.CreateApplicationDirectory();
         }
 
         #endregion
@@ -63,39 +59,51 @@ namespace GamesManager.Launcher.Models
 
         public void CheckСondition()
         {
-            GameState gameState;
+            UpdateStatus(OperationState.Checking, PlayButtonState.Wait);
 
-            if (IsInstalled())
+            Task.Delay(5000).Wait();
+
+            PlayButtonState playButtonState;
+
+            if (IsInstalled)
             {
-                gameState = IsUpdated() ? GameState.Play : GameState.Update;
+                playButtonState = IsUpdated() ? PlayButtonState.Play : PlayButtonState.Update;
             }
             else
             {
-                gameState = GameState.Install;
+                playButtonState = PlayButtonState.Install;
             }
 
-            UpdateStatus(OperationState.Completed, gameState);
+            UpdateStatus(OperationState.Completed, playButtonState);
+        }
+
+        private void UpdateStatus(OperationState operationState, PlayButtonState playButtonState)
+        {
+            OperationState = operationState;
+            PlayButtonState = playButtonState;
+
+            OperationStatusChanged?.Invoke(this, new OperationStatusChangedEventArgs(OperationState, PlayButtonState));
         }
 
         public void StartProcess()
         {
-            if (TokenSource == null)
+            if (TokenSource == null || TokenSource.IsCancellationRequested == true)
             {
                 TokenSource = new CancellationTokenSource();
             }
 
-            switch (GameState)
+            switch (PlayButtonState)
             {
-                case GameState.Play:
-                    Task.Run(async () => await Play(TokenSource.Token).ConfigureAwait(true));
+                case PlayButtonState.Play:
+                    Task.Run(() => Play(TokenSource.Token), TokenSource.Token);
                     break;
-                case GameState.Install:
-                    Task.Run(async () => await Install(TokenSource.Token).ConfigureAwait(true));
+                case PlayButtonState.Install:
+                    Task.Run(async () => await Install(TokenSource.Token).ConfigureAwait(true), TokenSource.Token);
                     break;
-                case GameState.Update:
-                    Task.Run(async () => await Update(TokenSource.Token).ConfigureAwait(true));
+                case PlayButtonState.Update:
+                    Task.Run(async () => await Update(TokenSource.Token).ConfigureAwait(true), TokenSource.Token);
                     break;
-                case GameState.Cancel:
+                case PlayButtonState.Cancel:
                     Task.Run(() => Cancel());
                     break;
                 default:
@@ -103,21 +111,54 @@ namespace GamesManager.Launcher.Models
             }
         }
 
-        private async Task Play(CancellationToken token) => throw new NotImplementedException();
+        private void Play(CancellationToken token)
+        {
+            try
+            {
+                UpdateStatus(OperationState.Playing, PlayButtonState.Play);
+
+                var proc = Process.Start(fileName: DirectoryManager.GetPathGame(GameName));
+
+                proc.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{nameof(Play)}\n" + ex.Message + "\n" + ex.ToString());
+                throw;
+            }
+            finally
+            {
+                CheckСondition();
+            }
+        }
 
         private async Task Install(CancellationToken token)
         {
             try
             {
-                UpdateStatus(OperationState.Downloading, GameState.Cancel);
+                UpdateStatus(OperationState.Downloading, PlayButtonState.Cancel);
 
                 var latestVersion = await GetUpdate(token).ConfigureAwait(true);
+                var cachePath = Path.Combine(DirectoryManager.CachePath, latestVersion.FileName);
 
-                WebClient.DownloadProgressChangedEventHandler += (s, e) => { throw new NotImplementedException(); };
+                WebClient.DownloadProgressChangedEventHandler += DownloadProgressChanged;
+                WebClient.AsyncCompletedEventHandler += (s, e) =>
+                {
+                    Debug.WriteLine("Complited");
+                    /* TODO: */
+                };
 
-                await WebClient.DownloadFileAsync(latestVersion.Uri, latestVersion.FileName, token).ConfigureAwait(true);
+                if (!DirectoryManager.IsExistsFile(cachePath, latestVersion.Size))
+                {
+                    await WebClient.DownloadFileAsync(latestVersion.Uri, cachePath, token).ConfigureAwait(true);
+                }
 
-                UpdateStatus(OperationState.Completed, GameState.Play);
+
+                UpdateStatus(OperationState.Installing, PlayButtonState.Cancel);
+
+                DirectoryManager.ExtractToDirectory(cachePath, DirectoryManager.AppsPath);
+
+                UpdateStatus(OperationState.Completed, PlayButtonState.Play);
 
             }
             catch (OperationCanceledException)
@@ -127,46 +168,45 @@ namespace GamesManager.Launcher.Models
 
                 throw;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //TODO: Notification about error.
+                MessageBox.Show($"{nameof(Install)}\n" + ex.Message + "\n" + ex.ToString());
                 throw;
             }
             finally
             {
-
+                WebClient.DownloadProgressChangedEventHandler -= DownloadProgressChanged;
+                CheckСondition();
             }
         }
 
-        private async Task Update(CancellationToken token) => throw new NotImplementedException();
+        private async Task Update(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
 
-        private async Task<VersionInfo> GetUpdate(CancellationToken token) 
+        private async Task<VersionInfo> GetUpdate(CancellationToken token)
             => await RestClient.GetAsync<VersionInfo>(VersionUri, token).ConfigureAwait(true);
 
-        private void Cancel() => throw new NotImplementedException();
-
-        private void UpdateStatus(OperationState operationState, GameState gameState)
+        private void Cancel()
         {
-            OperationState = operationState;
-            GameState = gameState;
+            UpdateStatus(OperationState.Canceling, PlayButtonState.Cancel);
+            Task.Delay(5000).Wait();
 
-            StatusChangedEvent?.Invoke(new OperationStatusChangedEventArgs(OperationState, GameState));
+            TokenSource.Cancel();
+            TokenSource.Dispose();
         }
 
-        private void Check() => throw new NotImplementedException();
-
-        private bool IsInstalled()
-        {
-            return false;
-        }
+        private bool IsInstalled => DirectoryManager.IsInstaled(GameName);
 
         private bool IsUpdated()
         {
-            return false;
+            //TODO: Implement.
+            return true;
         }
 
         #endregion
 
-
-        private string ConvertEnumToName(GameName gameName) => gameName.ToString().Replace('_', ' ');
     }
 }

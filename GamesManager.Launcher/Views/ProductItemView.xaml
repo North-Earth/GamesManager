@@ -7,56 +7,69 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewmodels="clr-namespace:GamesManager.Launcher.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="640"
-             MinHeight="100">
-    
+             d:DesignHeight="100" d:DesignWidth="600"
+             MinHeight="100" MinWidth="600"
+             MaxHeight="100" MaxWidth="800">
+
     <!--<UserControl.DataContext>
         <viewmodels:ProductItemViewModel/>
     </UserControl.DataContext>-->
-    
-    <Grid Background="White" Margin="15">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="70"/>
-        </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="4*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
+    <Grid Margin="15">
+        <materialDesign:Card 
+            materialDesign:ShadowAssist.ShadowDepth="Depth3" 
+            materialDesign:ShadowAssist.ShadowEdges="Bottom,Right"
+            Height="70">
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" Grid.Row="0">
-            <!--TODO: Add Game Logo.-->
-            <materialDesign:PackIcon 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <!--TODO: Add Game Logo.-->
+                    <materialDesign:PackIcon 
                 Kind="QuestionMarkRhombusOutline"
                 VerticalAlignment="Center" HorizontalAlignment="Center"
                 Height="50" Width="50" ToolTip="Logo"/>
-        </Grid>
-        
-        <Grid Grid.Column="1" Grid.Row="0">
-            <materialDesign:Badged 
+                </Grid>
+
+                <Grid Grid.Column="1" Grid.Row="0">
+                    <materialDesign:Badged 
                 Badge="{Binding BadgedText}" BadgeColorZoneMode="PrimaryMid"
                 VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
+                        <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
                            Text="{Binding GameManager.Name}" Margin="7"/>
-            </materialDesign:Badged>
-        </Grid>
+                    </materialDesign:Badged>
+                </Grid>
 
-        <Grid Grid.Column="2" Grid.Row="0">
-            <Button Style="{StaticResource MaterialDesignIconButton}" 
+                <Grid Grid.Column="2" Grid.Row="0">
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
                     Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                     HorizontalAlignment="Center" Height="45" Width="45"
                     Command="{Binding PlayButtonCommand}"
-                    IsEnabled="{Binding IsPlayButtonEnabled, UpdateSourceTrigger=PropertyChanged}">
-                <materialDesign:PackIcon Kind="{Binding PlayButtonIcon}" 
+                    IsEnabled="{Binding IsEnabledPlayButton, UpdateSourceTrigger=PropertyChanged}">
+                        <materialDesign:PackIcon Kind="{Binding PlayButtonIcon}" 
                                          Height="25" Width="25" />
-            </Button>
-        </Grid>
+                    </Button>
+                </Grid>
 
-        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
-            <ProgressBar IsIndeterminate="{Binding IsIndeterminateProgressBar}"
+                <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                    <ProgressBar IsIndeterminate="{Binding IsIndeterminateProgressBar}"
                          Value="{Binding ProgressBarValue}"/>
-        </Grid>
+                </Grid>
+                
+            </Grid>
+            
+        </materialDesign:Card>
+        
+      
     </Grid>
 </UserControl>

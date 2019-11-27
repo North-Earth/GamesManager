@@ -3,10 +3,8 @@ using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using GamesManager.Common.Enums;
-using GamesManager.Common.Events;
 
-namespace GamesManager.Net
+namespace GamesManager.Launcher.Models
 {
     public class WebClient : IWebClient
     {
@@ -31,12 +29,7 @@ namespace GamesManager.Net
 
                 token.Register(() => wc.CancelAsync());
 
-                await wc.DownloadFileTaskAsync(address, fileName);
-
-                if (token.IsCancellationRequested)
-                {
-                    token.ThrowIfCancellationRequested();
-                }
+                await wc.DownloadFileTaskAsync(address, fileName).ConfigureAwait(true);
             }
             catch (Exception)
             {

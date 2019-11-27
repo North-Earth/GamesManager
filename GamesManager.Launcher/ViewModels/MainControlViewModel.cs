@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Views;
 using MVVM_Helper.Binding;
@@ -11,6 +8,7 @@ namespace GamesManager.Launcher.ViewModels
     public class MainControlViewModel : ObservableObject
     {
         #region Fields
+
         private ObservableCollection<ProductItemView> productItemViews;
 
         public ObservableCollection<ProductItemView> ProductItemViews
@@ -32,7 +30,7 @@ namespace GamesManager.Launcher.ViewModels
             ProductItemViews = new ObservableCollection<ProductItemView>
             {
                 new ProductItemView(GameName.Roll_a_Ball),
-                //new ProductItemView("Roll a Ball Online", isActive: false),
+                new ProductItemView(GameName.Roll_a_Ball_Online),
             };
         }
 
