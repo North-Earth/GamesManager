@@ -1,7 +1,7 @@
 ﻿using System;
+using GamesManager.Launcher.Helper.Binding;
+using GamesManager.Launcher.Helper.Commands;
 using GamesManager.Launcher.Views;
-using MVVM_Helper.Binding;
-using MVVM_Helper.Commands;
 
 namespace GamesManager.Launcher.ViewModels
 {

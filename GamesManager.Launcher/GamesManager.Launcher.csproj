@@ -70,6 +70,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\Binding\ObservableObject.cs" />
+    <Compile Include="Helper\Commands\DelegateCommand.cs" />
     <Compile Include="Models\DirectoryManager.cs" />
     <Compile Include="Models\Enums\OperationState.cs" />
     <Compile Include="Models\Enums\PlayButtonState.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Models\IWebClient.cs" />
     <Compile Include="Models\RestClient.cs" />
     <Compile Include="Models\WebClient.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Views\ProductItemView.xaml.cs">
       <DependentUpon>ProductItemView.xaml</DependentUpon>
     </Compile>
@@ -137,18 +140,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helper\Binding\" />
-    <Folder Include="Helper\Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\GamesManager.Common\GamesManager.Common.csproj">
       <Project>{0812054F-8A57-45BA-9ABA-47CCFEE217AA}</Project>
       <Name>GamesManager.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MVVM-Helper\MVVM-Helper.csproj">
-      <Project>{2e148b2c-ae01-4dcb-8920-df712852ccea}</Project>
-      <Name>MVVM-Helper</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

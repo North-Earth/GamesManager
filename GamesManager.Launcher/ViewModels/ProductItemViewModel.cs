@@ -2,12 +2,12 @@
 using System.Net;
 using System.Threading.Tasks;
 using GamesManager.Common.Enums;
+using GamesManager.Launcher.Helper.Binding;
+using GamesManager.Launcher.Helper.Commands;
 using GamesManager.Launcher.Models;
 using GamesManager.Launcher.Models.Enums;
 using GamesManager.Launcher.Models.Events;
 using MaterialDesignThemes.Wpf;
-using MVVM_Helper.Binding;
-using MVVM_Helper.Commands;
 
 namespace GamesManager.Launcher.ViewModels
 {
@@ -91,7 +91,7 @@ namespace GamesManager.Launcher.ViewModels
                         PlayButtonIcon = PackIconKind.PlayCircleOutline;
                         break;
                     case PlayButtonState.Install:
-                        PlayButtonIcon = PackIconKind.Download;
+                        PlayButtonIcon = PackIconKind.DownloadMultiple;
                         break;
                     case PlayButtonState.Update:
                         BadgedText = UPDATE_STATUS;

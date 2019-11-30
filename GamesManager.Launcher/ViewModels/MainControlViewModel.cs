@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using GamesManager.Common.Enums;
+using GamesManager.Launcher.Helper.Binding;
 using GamesManager.Launcher.Views;
-using MVVM_Helper.Binding;
 
 namespace GamesManager.Launcher.ViewModels
 {
@@ -30,7 +30,7 @@ namespace GamesManager.Launcher.ViewModels
             ProductItemViews = new ObservableCollection<ProductItemView>
             {
                 new ProductItemView(GameName.Roll_a_Ball),
-                new ProductItemView(GameName.Roll_a_Ball_Online),
+                //new ProductItemView(GameName.Roll_a_Ball_Online),
             };
         }
 

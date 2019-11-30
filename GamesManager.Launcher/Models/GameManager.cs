@@ -9,6 +9,7 @@ using GamesManager.Common.Classes;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models.Enums;
 using GamesManager.Launcher.Models.Events;
+using GamesManager.Launcher.Properties;
 
 namespace GamesManager.Launcher.Models
 {
@@ -60,8 +61,6 @@ namespace GamesManager.Launcher.Models
         public void CheckСondition()
         {
             UpdateStatus(OperationState.Checking, PlayButtonState.Wait);
-
-            Task.Delay(5000).Wait();
 
             PlayButtonState playButtonState;
 
@@ -123,6 +122,7 @@ namespace GamesManager.Launcher.Models
             }
             catch (Exception ex)
             {
+                //TODO: Notification about error.
                 MessageBox.Show($"{nameof(Play)}\n" + ex.Message + "\n" + ex.ToString());
                 throw;
             }
@@ -158,6 +158,9 @@ namespace GamesManager.Launcher.Models
 
                 DirectoryManager.ExtractToDirectory(cachePath, DirectoryManager.AppsPath);
 
+                Settings.Default.Roll_a_Ball_Version = latestVersion.Version;
+                Settings.Default.Save();
+
                 UpdateStatus(OperationState.Completed, PlayButtonState.Play);
 
             }
@@ -183,7 +186,17 @@ namespace GamesManager.Launcher.Models
 
         private async Task Update(CancellationToken token)
         {
-            throw new NotImplementedException();
+            try
+            {
+                DirectoryManager.ClearDirectory(Path.Combine(DirectoryManager.AppsPath, Name));
+
+                await Install(token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{nameof(Update)}\n" + ex.Message + "\n" + ex.ToString());
+                throw;
+            }
         }
 
         private async Task<VersionInfo> GetUpdate(CancellationToken token)
@@ -202,8 +215,23 @@ namespace GamesManager.Launcher.Models
 
         private bool IsUpdated()
         {
-            //TODO: Implement.
-            return true;
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                string currentVersion = string.Empty;
+                var task = GetUpdate(tokenSource.Token);
+                task.Wait();
+
+                switch (GameName)
+                {
+                    case GameName.Roll_a_Ball:
+                        currentVersion = Settings.Default.Roll_a_Ball_Version;
+                        break;
+                    default:
+                        break;
+                }
+
+                return string.Equals(task.Result.Version, currentVersion);
+            }
         }
 
         #endregion

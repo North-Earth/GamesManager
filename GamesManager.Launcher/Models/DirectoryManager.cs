@@ -25,10 +25,27 @@ namespace GamesManager.Launcher.Models
                 Directory.CreateDirectory(AppsPath);
         }
 
-        public static void CreateDirectory(string name)
+        public static void CreateDirectory(string path)
         {
-            if (!Directory.Exists(name))
-                Directory.CreateDirectory(name);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+
+        public static void ClearDirectory(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo di = new DirectoryInfo(path);
+
+                foreach (FileInfo file in di.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.EnumerateDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }
         }
 
         public static bool IsExistsFile(string fileName, long size)
