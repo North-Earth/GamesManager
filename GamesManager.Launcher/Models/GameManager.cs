@@ -49,7 +49,7 @@ namespace GamesManager.Launcher.Models
             RestClient = new RestClient();
             WebClient = new WebClient();
 
-            VersionUri = new Uri($@"https://localhost:5001/gamemanager/{GameName}"); //TODO: Using resourse or config.
+            VersionUri = new Uri($@"http://localhost:5000/gamemanager/{GameName}"); //TODO: Using resourse or config.
 
             DirectoryManager.CreateApplicationDirectory();
         }
@@ -218,6 +218,7 @@ namespace GamesManager.Launcher.Models
             using (var tokenSource = new CancellationTokenSource())
             {
                 string currentVersion = string.Empty;
+
                 var task = GetUpdate(tokenSource.Token);
                 task.Wait();
 

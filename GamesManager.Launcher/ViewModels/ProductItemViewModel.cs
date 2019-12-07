@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Windows;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Helper.Binding;
 using GamesManager.Launcher.Helper.Commands;
@@ -88,6 +90,7 @@ namespace GamesManager.Launcher.ViewModels
                 switch (playButtonStatus)
                 {
                     case PlayButtonState.Play:
+                        BadgedText = string.Empty;
                         PlayButtonIcon = PackIconKind.PlayCircleOutline;
                         break;
                     case PlayButtonState.Install:
@@ -168,7 +171,19 @@ namespace GamesManager.Launcher.ViewModels
 
             PlayButtonCommand = new DelegateCommand(param => PlayButtonClick());
 
-            Task.Run(() => GameManager.CheckСondition());
+            Task.Run(() =>
+            {
+                try
+                {
+                    GameManager.CheckСondition();
+                }
+                catch (Exception)
+                {
+                    //TODO:
+                    MessageBox.Show("Start API Service.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    throw;
+                }
+            });
         }
 
 

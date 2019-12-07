@@ -13,23 +13,42 @@
         <viewmodels:MainControlViewModel/>
     </UserControl.DataContext>
 
-    <Grid Background="SandyBrown">
+    <!--Background="SandyBrown"-->
+    <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="325"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Grid.Row="0">
-
+            <TextBlock Style="{StaticResource MaterialDesignDisplay2TextBlock}" 
+                       Text="News" Margin="15,0,0,0"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" 
+                          Margin="0, 50, 0, 0">
+                <ItemsControl ItemsSource="{Binding NewsItemViews}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" 
+                                        Margin="0, 0, 15, 0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
 
         <Grid Grid.Column="1" Grid.Row="0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <TextBlock Style="{StaticResource MaterialDesignDisplay2TextBlock}" 
+                       Text="Games" Margin="15,0,0,0"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" 
+                          Margin="0, 50, 0, 0">
                 <ItemsControl ItemsSource="{Binding ProductItemViews}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical"/>
+                            <StackPanel Orientation="Vertical" 
+                                        Margin="0, 0, 15, 0"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>

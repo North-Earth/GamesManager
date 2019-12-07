@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewmodels="clr-namespace:GamesManager.Launcher.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding Header}" Height="600" Width="1024"
+        Title="Alexey Kukushkin's Game Launcher" Height="600" Width="1024"
         MinHeight="600" MinWidth="1024"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
@@ -16,7 +16,7 @@
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid>
+    <Grid Background="WhiteSmoke">
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
             <RowDefinition Height="1*"/>

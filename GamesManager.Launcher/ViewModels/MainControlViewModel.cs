@@ -11,12 +11,24 @@ namespace GamesManager.Launcher.ViewModels
 
         private ObservableCollection<ProductItemView> productItemViews;
 
+        private ObservableCollection<NewsItemView> newsItemViews;
+
         public ObservableCollection<ProductItemView> ProductItemViews
         {
             get => productItemViews;
             private set
             {
                 productItemViews = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<NewsItemView> NewsItemViews
+        {
+            get => newsItemViews;
+            private set
+            {
+                newsItemViews = value;
                 RaiseOnPropertyChanged();
             }
         }
@@ -31,6 +43,11 @@ namespace GamesManager.Launcher.ViewModels
             {
                 new ProductItemView(GameName.Roll_a_Ball),
                 //new ProductItemView(GameName.Roll_a_Ball_Online),
+            };
+
+            NewsItemViews = new ObservableCollection<NewsItemView>
+            {
+                new NewsItemView(),
             };
         }
 
