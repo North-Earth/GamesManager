@@ -28,14 +28,16 @@
 
                 <Grid Grid.Row="0">
                     <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
-                               Text="Header" 
+                               Text="First news" 
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center" />
                 </Grid>
 
                 <Grid Grid.Row="1">
                     <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                               Text="Test Text"/>
+                               Text="News updates will be here soon."
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" />
                 </Grid>
 
                 <Grid Grid.Row="2">
