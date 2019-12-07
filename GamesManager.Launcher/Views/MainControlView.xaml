@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="GamesManager.Launcher.Views.MainControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GamesManager.Launcher.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewmodels="clr-namespace:GamesManager.Launcher.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="490" d:DesignWidth="1024">
+
+    <UserControl.DataContext>
+        <viewmodels:MainControlViewModel/>
+    </UserControl.DataContext>
+
+    <!--Background="SandyBrown"-->
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="325"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Grid.Row="0">
+            <TextBlock Style="{StaticResource MaterialDesignDisplay2TextBlock}" 
+                       Text="News" Margin="15,0,0,0"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" 
+                          Margin="0, 50, 0, 0">
+                <ItemsControl ItemsSource="{Binding NewsItemViews}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" 
+                                        Margin="0, 0, 15, 0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="0">
+            <TextBlock Style="{StaticResource MaterialDesignDisplay2TextBlock}" 
+                       Text="Games" Margin="15,0,0,0"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" 
+                          Margin="0, 50, 0, 0">
+                <ItemsControl ItemsSource="{Binding ProductItemViews}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" 
+                                        Margin="0, 0, 15, 0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+    </Grid>
+
+</UserControl>

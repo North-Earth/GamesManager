@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MVVM_Helper.Binding
+namespace GamesManager.Launcher.Helper.Binding
 {
     public class ObservableObject : INotifyPropertyChanged
     {

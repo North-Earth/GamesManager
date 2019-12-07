@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using GamesManager.Common.Enums;
 using GamesManager.Launcher.Models.Events;
 
@@ -7,14 +6,23 @@ namespace GamesManager.Launcher.Models
 {
     public interface IGameManager
     {
-        public GameName GameName { get; }
+        #region Fields
+        string Name { get; }
 
-        public delegate void StatusesChangedHandler(GameManagerStatusesChangedEventArgs eventArgs);
+        GameName GameName { get; }
 
-        public event StatusesChangedHandler StatusesChangedEvent;
+        event DownloadProgressChangedEventHandler DownloadProgressChanged;
 
-        public Task StartupChecks();
+        event OperationStatusChangedEventHandler OperationStatusChanged;
 
-        public Task StartProcess(CancellationToken token);
+        #endregion
+
+        #region Methods
+
+        void CheckСondition();
+
+        void StartProcess();
+
+        #endregion
     }
 }

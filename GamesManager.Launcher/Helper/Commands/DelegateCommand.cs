@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MVVM_Helper.Binding;
+using GamesManager.Launcher.Helper.Binding;
 
-namespace MVVM_Helper.Commands
+namespace GamesManager.Launcher.Helper.Commands
 {
     public class DelegateCommand : ObservableObject, ICommand
     {

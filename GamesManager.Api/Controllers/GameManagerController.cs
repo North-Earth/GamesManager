@@ -26,7 +26,7 @@ namespace GamesManager.Api.Controllers
 
 #warning Added GamePlatform parametr and remove hardcode.
         [HttpGet("{name}", Name = "Get")]
-        public async Task<LatestVersionInfo> Get(GameName name) 
+        public async Task<VersionInfo> Get(GameName name) 
             => await _gamesManager.GetLatestVersionAsync(name, GamePlatform.win86).ConfigureAwait(false);
 
         #endregion
