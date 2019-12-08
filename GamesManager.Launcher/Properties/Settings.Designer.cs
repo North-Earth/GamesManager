@@ -34,5 +34,14 @@ namespace GamesManager.Launcher.Properties {
                 this["Roll_a_Ball_Version"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://api.github.com/repos/Revolt27/roll-a-ball/releases")]
+        public string The_Roll_Out_Releases_Uri {
+            get {
+                return ((string)(this["The_Roll_Out_Releases_Uri"]));
+            }
+        }
     }
 }

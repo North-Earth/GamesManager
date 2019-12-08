@@ -11,7 +11,7 @@ namespace GamesManager.Common.Classes
 
         public string Version { get; set; }
 
-        public DateTime ReleaseDate { get; set; }
+        public DateTimeOffset ReleaseDate { get; set; }
 
         public Uri Uri { get; set; }
 

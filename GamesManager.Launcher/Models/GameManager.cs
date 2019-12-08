@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +21,7 @@ namespace GamesManager.Launcher.Models
         #region Fields
 
         public GameName GameName { get; }
+        public GamePlatform GamePlatform { get; }
 
         public string Name { get; }
 
@@ -43,6 +47,7 @@ namespace GamesManager.Launcher.Models
         public GameManager(GameName gameName)
         {
             GameName = gameName;
+            GamePlatform = GamePlatform.win86;
             Name = DirectoryManager.ConvertEnumToName(GameName);
 
             //TODO: Add DI.
@@ -200,7 +205,29 @@ namespace GamesManager.Launcher.Models
         }
 
         private async Task<VersionInfo> GetUpdate(CancellationToken token)
-            => await RestClient.GetAsync<VersionInfo>(VersionUri, token).ConfigureAwait(true);
+        {
+            var release = await GetReleaseAsync().ConfigureAwait(false);
+            var asset = release.Assets.Where(a => a.Name.Contains(value: GamePlatform.ToString()))
+                .SingleOrDefault();
+
+            return new VersionInfo()
+            {
+                Id = GameName,
+                FileName = asset.Name,
+                ReleaseDate = release.PublishedAt,
+                Version = release.TagName,
+                Uri = asset.BrowserDownloadUrl,
+                Size = asset.Size
+            };
+
+            //return await RestClient.GetAsync<VersionInfo>(VersionUri, token).ConfigureAwait(true);
+        }
+
+        private async Task<GitHubRelease> GetReleaseAsync()
+        {
+            var releases = await RestClient.GetAsync<GitHubRelease>(new Uri(Settings.Default.The_Roll_Out_Releases_Uri)).ConfigureAwait(true);
+            return releases.Where(r => r.Id == releases.Max(rl => rl.Id)).SingleOrDefault();
+        }
 
         private void Cancel()
         {

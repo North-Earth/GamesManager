@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -40,6 +42,26 @@ namespace GamesManager.Launcher.Models
             {
                 throw;
             }
+        }
+
+        public async Task<List<T>> GetAsync<T>(Uri requestUri) where T: class
+        {
+            var mediaType = new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json");
+
+            List<T> response = default;
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(mediaType);
+                client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+
+                var releaseSting = await client.GetStringAsync(requestUri).ConfigureAwait(true);
+
+                response = JsonConvert.DeserializeObject<List<T>>(releaseSting);
+            }
+
+            return response;
         }
 
         #endregion
