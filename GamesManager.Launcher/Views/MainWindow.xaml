@@ -10,7 +10,7 @@
         Title="Alexey Kukushkin's Game Launcher" Height="600" Width="1024"
         MinHeight="600" MinWidth="1024"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        FontFamily="{DynamicResource MaterialDesignFont}" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
@@ -30,12 +30,12 @@
                 <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
                     <Button Style="{StaticResource MaterialDesignIconButton}" 
                             Command="{Binding SettingsButtonCommand}"
-                            ToolTip="Settings" Margin="5,0">
+                            ToolTip="Settings" Margin="5,0" IsEnabled="False">
                         <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
                     </Button>
                     <Button Style="{StaticResource MaterialDesignIconButton}" 
                             Command="{Binding FeedbackButtonCommand}"
-                            ToolTip="Feedback" Margin="5,0">
+                            ToolTip="Feedback" Margin="5,0" IsEnabled="False">
                         <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
                     </Button>
                 </StackPanel>
@@ -49,6 +49,14 @@
         </Grid>
 
         <Grid Grid.Column="0" Grid.Row="2">
+            <materialDesign:ColorZone materialDesign:ShadowAssist.ShadowDepth="Depth2" Height="25">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Margin="5">
+                             <Run Text="Vesion:" />
+                             <Run Text="{Binding Vesion}" />
+                    </TextBlock>
+                </StackPanel>
+            </materialDesign:ColorZone>
             <!-- TODO: Information Bar -->
         </Grid>
 

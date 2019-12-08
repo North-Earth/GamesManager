@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,18 @@ namespace GamesManager.Launcher
     {
         public MainWindow()
         {
+            string name = "GamesManager.Launcher";
+
+            if (GetProcesses(name).Count > 1)
+            {
+                MessageBox.Show("Application is already running.");
+                Application.Current.Shutdown();
+            }
+
             InitializeComponent();
         }
+
+        public static IReadOnlyList<Process> GetProcesses(string name) 
+            => Process.GetProcesses().Where(p => p.ProcessName.Contains(name)).ToList();
     }
 }

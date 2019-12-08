@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using GamesManager.Launcher.Helper.Binding;
 using GamesManager.Launcher.Helper.Commands;
 using GamesManager.Launcher.Views;
@@ -10,6 +11,15 @@ namespace GamesManager.Launcher.ViewModels
         #region Fields
 
         private MainControlView userControl;
+
+        private string vesion;
+
+        public string Vesion
+        {
+
+            get => vesion;
+            set => vesion = value;
+        }
 
         public MainControlView UserControl
         {
@@ -31,6 +41,7 @@ namespace GamesManager.Launcher.ViewModels
 
         public MainWindowViewModel()
         {
+            Vesion = Assembly.GetEntryAssembly().GetName().Version.ToString();
             UserControl = new MainControlView();
 
             SettingsButtonCommand = new DelegateCommand(param => SettingsButtonClick());
