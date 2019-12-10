@@ -35,7 +35,7 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Games Launcher</ProductName>
     <PublisherName>Alexey Kukushkin</PublisherName>
-    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>0.1.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -247,6 +247,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Launcher-Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\Backgroud.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\LauncherLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -12,7 +12,7 @@ namespace GamesManager.Launcher.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -38,9 +38,9 @@ namespace GamesManager.Launcher.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://api.github.com/repos/Revolt27/roll-a-ball/releases")]
-        public string The_Roll_Out_Releases_Uri {
+        public string Roll_a_Ball_Releases_Uri {
             get {
-                return ((string)(this["The_Roll_Out_Releases_Uri"]));
+                return ((string)(this["Roll_a_Ball_Releases_Uri"]));
             }
         }
     }

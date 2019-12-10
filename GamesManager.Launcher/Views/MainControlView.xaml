@@ -8,6 +8,9 @@
              xmlns:viewmodels="clr-namespace:GamesManager.Launcher.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="490" d:DesignWidth="1024">
+    <!--<UserControl.Background>
+        <ImageBrush ImageSource="/GamesManager.Launcher;component/Resourses/Backgroud.png" Stretch="UniformToFill" TileMode="None"/>
+    </UserControl.Background>-->
 
     <UserControl.DataContext>
         <viewmodels:MainControlViewModel/>

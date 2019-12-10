@@ -225,7 +225,7 @@ namespace GamesManager.Launcher.Models
 
         private async Task<GitHubRelease> GetReleaseAsync()
         {
-            var releases = await RestClient.GetAsync<GitHubRelease>(new Uri(Settings.Default.The_Roll_Out_Releases_Uri)).ConfigureAwait(true);
+            var releases = await RestClient.GetAsync<GitHubRelease>(new Uri(Settings.Default.Roll_a_Ball_Releases_Uri)).ConfigureAwait(true);
             return releases.Where(r => r.Id == releases.Max(rl => rl.Id)).SingleOrDefault();
         }
 

@@ -43,10 +43,10 @@
 
                 <Grid Grid.Column="1" Grid.Row="0">
                     <materialDesign:Badged 
-                Badge="{Binding BadgedText}" BadgeColorZoneMode="PrimaryMid"
-                VerticalAlignment="Center" HorizontalAlignment="Center">
+                        Badge="{Binding BadgedText}" BadgeColorZoneMode="PrimaryMid"
+                        VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" 
-                           Text="{Binding GameManager.Name}" Margin="7"/>
+                           Text="{Binding GameManager.Name}" Margin="5, 0"/>
                     </materialDesign:Badged>
                 </Grid>
 

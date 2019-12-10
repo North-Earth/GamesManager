@@ -35,6 +35,8 @@ namespace GamesManager.Launcher.ViewModels
 
         public DelegateCommand FeedbackButtonCommand { get; set; }
 
+        public DelegateCommand OpenDirectoryButtonCommand { get; set; }
+
         #endregion
 
         #region Constructors
@@ -46,6 +48,7 @@ namespace GamesManager.Launcher.ViewModels
 
             SettingsButtonCommand = new DelegateCommand(param => SettingsButtonClick());
             FeedbackButtonCommand = new DelegateCommand(param => FeedbackButtonClick());
+            OpenDirectoryButtonCommand = new DelegateCommand(param => OpenDirectoryButtonClick());
         }
 
         #endregion
@@ -55,6 +58,12 @@ namespace GamesManager.Launcher.ViewModels
         public void SettingsButtonClick() { throw new NotImplementedException(); }
 
         public void FeedbackButtonClick() { throw new NotImplementedException(); }
+
+        public static void OpenDirectoryButtonClick() 
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            System.Diagnostics.Process.Start("explorer.exe", path);
+        }
 
         #endregion
     }

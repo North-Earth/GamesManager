@@ -27,25 +27,34 @@
             <materialDesign:ColorZone 
                 materialDesign:ShadowAssist.ShadowDepth="Depth2"
                 Mode="Light" VerticalAlignment="Stretch">
-                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
-                    <Button Style="{StaticResource MaterialDesignIconButton}" 
-                            Command="{Binding SettingsButtonCommand}"
-                            ToolTip="Settings" Margin="5,0" IsEnabled="False">
-                        <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignIconButton}" 
-                            Command="{Binding FeedbackButtonCommand}"
-                            ToolTip="Feedback" Margin="5,0" IsEnabled="False">
-                        <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
-                    </Button>
-                </StackPanel>
+                <Grid>
+                    <Image VerticalAlignment="Center" HorizontalAlignment="Left" Source="/GamesManager.Launcher;component/Resourses/LauncherLogo.png" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                Command="{Binding SettingsButtonCommand}"
+                                ToolTip="Settings" Margin="5,0" IsEnabled="False">
+                            <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                Command="{Binding FeedbackButtonCommand}"
+                                ToolTip="Feedback" Margin="5,0" IsEnabled="False">
+                            <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                Command="{Binding OpenDirectoryButtonCommand}"
+                                ToolTip="Feedback" Margin="5,0" IsEnabled="True">
+                            <materialDesign:PackIcon Kind="FolderOpenOutline" Height="24" Width="24" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                    
                 <!-- TODO: Logo -->
             </materialDesign:ColorZone>
         </Grid>
 
-        <Grid Grid.Column="0" Grid.Row="1" Margin="15">
+        <Grid Grid.Column="0" Grid.Row="1" Margin="0,15, 0, 0">
+            <!-- Main UI -->
             <UserControl Content="{Binding UserControl}"/>
-            <!-- TODO: Main UI -->
         </Grid>
 
         <Grid Grid.Column="0" Grid.Row="2">
