@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="GamesManager.Client.Views.GameControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GamesManager.Client.Views"
+             xmlns:viewmodels="clr-namespace:GamesManager.Client.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <Style TargetType="UserControl">
+            <Setter Property="Background" Value="DimGray" />
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <viewmodels:GameControlViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Column="1" Grid.Row="0">
+            <DockPanel LastChildFill="True">
+                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Foreground="White"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
+                    <Grid>
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                            materialDesign:ButtonProgressAssist.Value="-1"
+                            materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                            materialDesign:ButtonProgressAssist.IsIndeterminate="True" 
+                            materialDesign:ButtonAssist.CornerRadius="5"
+                            Height="50" Width="200" FlowDirection="LeftToRight">
+                            <StackPanel Orientation="Horizontal" Margin="5, 0">
+                                <materialDesign:PackIcon 
+                                Kind="Download" Width="35" Height="35" 
+                                Foreground="White" Margin="5,0"/>
+                                <TextBlock
+                                Style="{StaticResource MaterialDesignHeadline5TextBlock}" 
+                                Text="Install" Foreground="White" Margin="5, 0"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+                <TextBlock Style="{StaticResource MaterialDesignHeadline2TextBlock}"
+                           DockPanel.Dock="Left" Text="Gane Name" Foreground="White"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

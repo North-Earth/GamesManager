@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Windows.Controls;
+using GamesManager.Client.Views;
 
 namespace GamesManager.Client.ViewModels
 {
@@ -8,11 +7,22 @@ namespace GamesManager.Client.ViewModels
     {
         #region Fields
 
+        private UserControl userControl;
+
+        public UserControl UserControl
+        {
+            get => userControl;
+            set => userControl = value;
+        }
+
         #endregion
 
         #region Constructors
 
-        public MainWindowViewModel() { }
+        public MainWindowViewModel() 
+        {
+            UserControl = new MainControlView();
+        }
 
         #endregion
 

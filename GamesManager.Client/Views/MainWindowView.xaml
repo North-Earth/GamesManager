@@ -5,19 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GamesManager.Client"
         xmlns:viewmodels="clr-namespace:GamesManager.Client.ViewModels"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
-    
+
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid Background="WhiteSmoke">
+    <Grid Background="DimGray">
         <Grid.RowDefinitions>
-            <RowDefinition Height="55"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
+        <Grid Grid.Column="0" Grid.Row="0">
+            <materialDesign:ColorZone 
+                materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                Mode="Light" VerticalAlignment="Stretch">
+                <Grid>
+                    <Image HorizontalAlignment="Left" Width="280" Source="GamesLauncherHeadLogo.png"/>
+                    <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="280,0,5,0">
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                    Command="{Binding SettingsButtonCommand}"
+                                    ToolTip="Settings" Margin="5,0" IsEnabled="True">
+                            <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                    Command="{Binding FeedbackButtonCommand}"
+                                    ToolTip="Feedback" Margin="5,0" IsEnabled="True">
+                            <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                    Command="{Binding OpenDirectoryButtonCommand}"
+                                    ToolTip="Open Directory Catalog" Margin="5,0" IsEnabled="True">
+                            <materialDesign:PackIcon Kind="FolderOpenOutline" Height="24" Width="24" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </materialDesign:ColorZone>
+        </Grid>
+
+        <Grid Grid.Column="0" Grid.Row="1">
+            <UserControl Content="{Binding UserControl}"/>
+        </Grid>
     </Grid>
 </Window>
