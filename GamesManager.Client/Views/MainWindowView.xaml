@@ -24,8 +24,12 @@
                 materialDesign:ShadowAssist.ShadowDepth="Depth2"
                 Mode="Light" VerticalAlignment="Stretch">
                 <Grid>
-                    <Image HorizontalAlignment="Left" Width="280" Source="GamesLauncherHeadLogo.png"/>
+                    <Image Margin="0,5" HorizontalAlignment="Left" Width="280" Source="/GamesManager.Client;component/Resources/Images/GamesLauncherHeadLogo.png"/>
                     <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="280,0,5,0">
+                        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromRight, Duration=0:0:0.8}" FlowDirection="LeftToRight">
+                            <Button Content="{materialDesign:PackIcon GiftOutline}" 
+                                ToolTip="What's News" Foreground="White"/>
+                        </materialDesign:TransitioningContent>
                         <Button Style="{StaticResource MaterialDesignIconButton}" 
                                     Command="{Binding SettingsButtonCommand}"
                                     ToolTip="Settings" Margin="5,0" IsEnabled="True">

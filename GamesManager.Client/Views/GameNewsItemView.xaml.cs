@@ -10,28 +10,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GamesManager.Client.Models.Enums;
-using GamesManager.Client.ViewModels;
 
 namespace GamesManager.Client.Views
 {
     /// <summary>
-    /// Interaction logic for GameControlView.xaml
+    /// Interaction logic for GameNewsItemView.xaml
     /// </summary>
-    public partial class GameControlView : UserControl
+    public partial class GameNewsItemView : UserControl
     {
-        public readonly GameName GameName;
-
-        public GameControlView()
+        public GameNewsItemView()
         {
-            InitializeComponent();
-        }
-
-        public GameControlView(GameName gameName)
-        {
-            GameName = gameName;
-            DataContext = new GameControlViewModel(gameName);
-
             InitializeComponent();
         }
     }

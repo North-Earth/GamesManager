@@ -6,10 +6,22 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <StartupObject>GamesManager.Client.App</StartupObject>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageIcon>LauncherIcon.png</PackageIcon>
+    <PackageIconUrl />
+    <Authors>Alexey Kukushkin</Authors>
+    <Product>Games Launcher</Product>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>0.2.0.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\GamesLauncherSplashScreen.png" />
     <None Remove="Views\GamesLauncherHeadLogo.png" />
+    <None Include="..\..\..\..\Users\kucku\Pictures\Photoshop\LauncherIcon.png" Link="Resources\Images\LauncherIcon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -18,11 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Resource Include="Resources\Images\GamesLauncherHeadLogo.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\GamesLauncherHeadLogo.png" />
+    <SplashScreen Include="Resources\Images\GamesLauncherSplashScreen.png" />
   </ItemGroup>
 
 </Project>

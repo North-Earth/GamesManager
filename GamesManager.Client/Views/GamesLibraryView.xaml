@@ -36,24 +36,40 @@
         </Grid>
 
         <Grid Grid.Column="0" Grid.Row="1" Margin="5">
-            <StackPanel Orientation="Vertical">
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" Height="50" HorizontalContentAlignment="Left" IsChecked="True">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="QuestionMarkCircleOutline" Width="35" Height="35" Margin="5,0" Foreground="White"/>
-                        <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Roll a Ball" Foreground="White"/>
-                    </StackPanel>
-                </RadioButton>
-                <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" Height="50" HorizontalContentAlignment="Left">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Atom" Width="35" Height="35" Margin="5,0" Foreground="White"/>
-                        <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="The Roll Out" Foreground="White"/>
-                    </StackPanel>
-                </RadioButton>
-            </StackPanel>
+            <ScrollViewer 
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+                Style="{StaticResource MaterialDesignScrollViewer}">
+                <ListBox ItemsSource="{Binding LibraryItems}"
+                         SelectedItem="{Binding SelectedLibraryItem}"
+                         Style="{StaticResource MaterialDesignListBox}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}" 
+                                         Height="50" Width="250" HorizontalContentAlignment="Left">
+                                <RadioButton.IsChecked>
+                                    <Binding Path="IsSelected"
+                                             RelativeSource="{RelativeSource AncestorType=ListBoxItem}"
+                                             Mode="TwoWay" />
+                                </RadioButton.IsChecked>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon 
+                                        Kind="{Binding Icon}" 
+                                        Width="35" Height="35" Margin="5,0" 
+                                        Foreground="White"/>
+                                    <TextBlock 
+                                        Style="{StaticResource MaterialDesignHeadline5TextBlock}" 
+                                        Text="{Binding Name}" Foreground="White"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
         </Grid>
 
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="5">
-            <UserControl Content="{Binding GameControl}"/>
+            <UserControl Content="{Binding GameControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -8,15 +8,16 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1000">
+    
     <UserControl.Resources>
         <Style TargetType="UserControl">
             <Setter Property="Background" Value="DimGray" />
         </Style>
     </UserControl.Resources>
 
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <viewmodels:GameControlViewModel/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     
     <Grid>
         <Grid.ColumnDefinitions>
@@ -25,10 +26,11 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="90"/>
+            <RowDefinition Height="350"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="1" Grid.Row="0">
+        <Grid Grid.Column="0" Grid.Row="0">
             <DockPanel LastChildFill="True">
                 <Separator DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Foreground="White"/>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
@@ -51,8 +53,28 @@
                     </Grid>
                 </StackPanel>
                 <TextBlock Style="{StaticResource MaterialDesignHeadline2TextBlock}"
-                           DockPanel.Dock="Left" Text="Gane Name" Foreground="White"/>
+                           DockPanel.Dock="Left" Text="{Binding Name}" Foreground="White"/>
             </DockPanel>
+        </Grid>
+
+        <Grid Grid.Column="0" Grid.Row="1" Margin="5,0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
+                           Text="News" Margin="5"/>
+                <materialDesign:TransitioningContent 
+                    OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromBottom}">
+                    <ScrollViewer VerticalScrollBarVisibility="Disabled"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding GameNewsItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </materialDesign:TransitioningContent>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
