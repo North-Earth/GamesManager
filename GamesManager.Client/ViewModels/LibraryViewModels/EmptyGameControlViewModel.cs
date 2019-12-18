@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace GamesManager.Client.ViewModels
+namespace GamesManager.Client.ViewModels.LibraryViewModels
 {
     public class EmptyGameControlViewModel
     {
@@ -20,12 +20,8 @@ namespace GamesManager.Client.ViewModels
 
         public EmptyGameControlViewModel()
         {
-            Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            Version = Assembly.GetEntryAssembly().GetName().Version.ToString(); //TODO: !!!!!!!!!!!!
         }
-
-        #endregion
-
-        #region Methods
 
         #endregion
     }

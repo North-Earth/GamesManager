@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GamesManager.Client.Models.Enums;
-using GamesManager.Client.ViewModels;
+using GamesManager.Client.ViewModels.LibraryViewModels;
 
 namespace GamesManager.Client.Views
 {

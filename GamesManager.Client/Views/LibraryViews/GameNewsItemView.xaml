@@ -20,7 +20,7 @@
 
                 <Grid Grid.Column="0" Grid.Row="0">
                     <StackPanel Orientation="Vertical">
-                        <Image Height="100"/>
+                        <Image Height="100" Source="/GamesManager.Client;component/Resources/Images/GamesLauncherHeadLogo.png" Stretch="Uniform" StretchDirection="Both"/>
                         <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" 
                                    Text="Update 1.2.2.1" Margin="5,0"/>
                         <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}"

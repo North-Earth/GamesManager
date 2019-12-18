@@ -1,14 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Controls;
+using GamesManager.Client.Helpers.Binding;
 using GamesManager.Client.Models;
 using GamesManager.Client.Models.Enums;
 using GamesManager.Client.Views;
-using System.Linq;
-using System.Diagnostics;
-using System.ComponentModel;
-using GamesManager.Client.Helpers.Binding;
 
-namespace GamesManager.Client.ViewModels
+namespace GamesManager.Client.ViewModels.LibraryViewModels
 {
     public class GamesLibraryViewModel : NotifyPropertyChanged
     {
@@ -36,8 +34,8 @@ namespace GamesManager.Client.ViewModels
             set => libraryItems = value;
         }
 
-        public LibraryItemModel SelectedLibraryItem 
-        { 
+        public LibraryItemModel SelectedLibraryItem
+        {
             get => selectedLibraryItem;
             set
             {

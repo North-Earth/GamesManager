@@ -9,11 +9,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1000">
     
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <Style TargetType="UserControl">
             <Setter Property="Background" Value="DimGray" />
         </Style>
-    </UserControl.Resources>
+    </UserControl.Resources>-->
 
     <!--<UserControl.DataContext>
         <viewmodels:GameControlViewModel/>
@@ -26,14 +26,22 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="90"/>
-            <RowDefinition Height="350"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Column="0" Grid.Row="0">
             <DockPanel LastChildFill="True">
-                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Foreground="White"/>
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="5,0">
+                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Bottom" 
+                           Foreground="White"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" 
+                            FlowDirection="RightToLeft" Margin="5,0">
+                    <materialDesign:PopupBox Foreground="White" FlowDirection="LeftToRight" PlacementMode="BottomAndAlignRightEdges">
+                        <ListBox>
+                            <ListBoxItem Content="Remove" IsEnabled="False"/>
+                            <ListBoxItem Content="Reinstall" IsEnabled="False"/>
+                        </ListBox>
+                    </materialDesign:PopupBox>
                     <Grid>
                         <Button Style="{StaticResource MaterialDesignRaisedButton}"
                             materialDesign:ButtonProgressAssist.Value="-1"
@@ -57,23 +65,44 @@
             </DockPanel>
         </Grid>
 
+        <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="3">
+            <Image Stretch="Uniform" Source="{Binding BackgroundImage, Mode=OneWay}"/>
+        </Grid>
+        
         <Grid Grid.Column="0" Grid.Row="1" Margin="5,0">
             <StackPanel Orientation="Vertical">
-                <TextBlock Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
-                           Text="News" Margin="5"/>
-                <materialDesign:TransitioningContent 
-                    OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromBottom}">
-                    <ScrollViewer VerticalScrollBarVisibility="Disabled"
+                <StackPanel Orientation="Vertical">
+                    <UserControl Content="{Binding GameHeadControl}" Height="200"/>
+                    <TextBlock Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
+                               Text="News" Margin="5" Foreground="White"/>
+                    <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromBottom}">
+                        <ScrollViewer VerticalScrollBarVisibility="Disabled"
                                   HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding GameNewsItems}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </materialDesign:TransitioningContent>
+                            <ItemsControl ItemsSource="{Binding GameNewsItems}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </materialDesign:TransitioningContent>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="0" Grid.Row="2">
+            
+        </Grid>
+
+        <Grid Grid.Column="0" Grid.Row="3">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                       Margin="5" Foreground="DarkGray"
+                       VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Run Text="Version"/>
+                <Run Text="1.0.0.0"/>
+                </TextBlock>
             </StackPanel>
         </Grid>
     </Grid>

@@ -7,13 +7,13 @@
         xmlns:viewmodels="clr-namespace:GamesManager.Client.ViewModels"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
+        Title="MainWindow" Height="780" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
 
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid Background="DimGray">
+    <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="1*"/>
@@ -28,7 +28,12 @@
                     <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="280,0,5,0">
                         <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromRight, Duration=0:0:0.8}" FlowDirection="LeftToRight">
                             <Button Content="{materialDesign:PackIcon GiftOutline}" 
-                                ToolTip="What's News" Foreground="White"/>
+                                    ToolTip="What's News" Foreground="White"
+                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                <Button.CommandParameter>
+                                    <TextBlock Text="123"/>
+                                </Button.CommandParameter>
+                            </Button>
                         </materialDesign:TransitioningContent>
                         <Button Style="{StaticResource MaterialDesignIconButton}" 
                                     Command="{Binding SettingsButtonCommand}"

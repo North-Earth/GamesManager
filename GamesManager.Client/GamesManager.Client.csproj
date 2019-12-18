@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <None Remove="Resources\Images\GamesLauncherSplashScreen.png" />
+    <None Remove="Resources\Images\RaB_BackGround.png" />
     <None Remove="Views\GamesLauncherHeadLogo.png" />
     <None Include="..\..\..\..\Users\kucku\Pictures\Photoshop\LauncherIcon.png" Link="Resources\Images\LauncherIcon.png">
       <Pack>True</Pack>
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\GamesLauncherHeadLogo.png" />
+    <Resource Include="Resources\Images\RaB_BackGround.png" />
   </ItemGroup>
 
   <ItemGroup>
