@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:GamesManager.Client"
         xmlns:viewmodels="clr-namespace:GamesManager.Client.ViewModels"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         Title="MainWindow" Height="780" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
 
@@ -13,50 +14,50 @@
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid Background="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
+    <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True">
+        <Grid Background="#FF464646">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0" Grid.Row="0">
-            <materialDesign:ColorZone 
-                materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                Mode="Light" VerticalAlignment="Stretch">
-                <Grid>
-                    <Image Margin="0,5" HorizontalAlignment="Left" Width="280" Source="/GamesManager.Client;component/Resources/Images/GamesLauncherHeadLogo.png"/>
-                    <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="280,0,5,0">
-                        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromRight, Duration=0:0:0.8}" FlowDirection="LeftToRight">
-                            <Button Content="{materialDesign:PackIcon GiftOutline}" 
-                                    ToolTip="What's News" Foreground="White"
-                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                <Button.CommandParameter>
-                                    <TextBlock Text="123"/>
-                                </Button.CommandParameter>
+            <Grid Grid.Column="0" Grid.Row="0">
+                <materialDesign:ColorZone 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                    Mode="Light" VerticalAlignment="Stretch">
+                    <Grid>
+                        <Image Margin="0,5" HorizontalAlignment="Left" Width="280" Source="/GamesManager.Client;component/Resources/Images/GamesLauncherHeadLogo.png"/>
+                        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="280,0,5,0">
+                            <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromRight, Duration=0:0:0.8}" FlowDirection="LeftToRight">
+                                <Button Content="{materialDesign:PackIcon GiftOutline}" 
+                                        ToolTip="What's News" Foreground="White"
+                                        Command="{Binding OpenDialogWhatsNewCommand}"
+                                        Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
+                            </materialDesign:TransitioningContent>
+                            <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                        Command="{Binding SettingsButtonCommand}"
+                                        ToolTip="Settings" Margin="5,0" IsEnabled="True">
+                                <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
                             </Button>
-                        </materialDesign:TransitioningContent>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                    Command="{Binding SettingsButtonCommand}"
-                                    ToolTip="Settings" Margin="5,0" IsEnabled="True">
-                            <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                    Command="{Binding FeedbackButtonCommand}"
-                                    ToolTip="Feedback" Margin="5,0" IsEnabled="True">
-                            <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                    Command="{Binding OpenDirectoryButtonCommand}"
-                                    ToolTip="Open Directory Catalog" Margin="5,0" IsEnabled="True">
-                            <materialDesign:PackIcon Kind="FolderOpenOutline" Height="24" Width="24" />
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </materialDesign:ColorZone>
-        </Grid>
+                            <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                        Command="{Binding FeedbackButtonCommand}"
+                                        ToolTip="Feedback" Margin="5,0" IsEnabled="True">
+                                <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                        Command="{Binding OpenDirectoryButtonCommand}"
+                                        ToolTip="Open Directory Catalog" Margin="5,0" IsEnabled="True">
+                                <materialDesign:PackIcon Kind="FolderOpenOutline" Height="24" Width="24" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:ColorZone>
+            </Grid>
 
-        <Grid Grid.Column="0" Grid.Row="1">
-            <UserControl Content="{Binding UserControl}"/>
+            <Grid Grid.Column="0" Grid.Row="1">
+                <UserControl Content="{Binding UserControl}"/>
+            </Grid>
         </Grid>
-    </Grid>
+    </materialDesign:DialogHost>
 </Window>
