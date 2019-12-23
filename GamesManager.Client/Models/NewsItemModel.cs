@@ -11,5 +11,10 @@ namespace GamesManager.Client.Models
         public string Description { get; set; }
 
         public DateTime ReleaseDate { get; set; }
+
+        public string ReleseDateView
+        {
+            get => ReleaseDate.ToString("D");
+        }
     }
 }

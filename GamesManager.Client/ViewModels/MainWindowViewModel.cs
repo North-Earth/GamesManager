@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GamesManager.Client.Helpers.Binding;
@@ -12,16 +14,44 @@ using MaterialDesignThemes.Wpf;
 
 namespace GamesManager.Client.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : NotifyPropertyChanged
     {
         #region Fields
 
-        private UserControl userControl;
+        private ObservableCollection<UserControl> dialogs { get; set; }
 
-        public UserControl UserControl
+        private UserControl rootControl;
+        private UserControl rootDialog;
+        private bool isOpenRootDialog;
+
+        public UserControl RootControl
         {
-            get => userControl;
-            set => userControl = value;
+            get => rootControl;
+            set => rootControl = value;
+        }
+
+        public UserControl RootDialog
+        {
+            get => rootDialog;
+            set
+            {
+                if (rootDialog == value) { return; }
+
+                rootDialog = value;
+                OnPropertyChanged(nameof(RootDialog));
+            }
+        }
+
+        public bool IsOpenRootDialog
+        {
+            get => isOpenRootDialog;
+            set
+            {
+                if (isOpenRootDialog == value) { return; }
+
+                isOpenRootDialog = value;
+                OnPropertyChanged(nameof(IsOpenRootDialog));
+            }
         }
 
         public ICommand OpenDialogWhatsNewCommand => new Command(OpenDialogWhatsNew);
@@ -31,39 +61,55 @@ namespace GamesManager.Client.ViewModels
 
         public MainWindowViewModel() 
         {
-            UserControl = new MainControlView();
+            RootControl = new MainControlView();
+            InitializeDialogs();
         }
 
         #endregion
 
         #region Methods
 
-        private async void OpenDialogWhatsNew(object obj)
+        private void InitializeDialogs()
         {
+            dialogs = new ObservableCollection<UserControl>();
+
+            //TODO: Add Logic.
             var newsItems = new ObservableCollection<NewsItemModel>
-            { 
-                new NewsItemModel() 
+            {
+                new NewsItemModel()
                 {
                     Header = "Header",
                     Description = "Description",
-                    ReleaseDate = DateTime.Now 
-                }
+                    ReleaseDate = DateTime.Now
+                },
+                new NewsItemModel()
+                {
+                    Header = "Games Manager was created",
+                    Description = "Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text." +
+                    " Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text." +
+                    " Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text.",
+                    ReleaseDate = new DateTime(2019, 9, 28)
+                },
             };
 
-            //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new WhatsNewsDialogView
+            var whatsNewsDialogView = new WhatsNewsDialogView
             {
+                Name = nameof(WhatsNewsDialogView),
                 DataContext = new WhatsNewsDialogViewModel(newsItems)
             };
 
-            //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+            dialogs.Add(whatsNewsDialogView);
         }
 
-        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        private void OpenRootDialog(string name)
         {
-            bool isDebug = true;
+            RootDialog = dialogs.Where(dlg => dlg.Name.Equals(name)).Single();
+            IsOpenRootDialog = true;
         }
+
+        private void CloseRootDialog() => IsOpenRootDialog = false;
+
+        private void OpenDialogWhatsNew(object obj) => OpenRootDialog(nameof(WhatsNewsDialogView));
 
         #endregion
     }

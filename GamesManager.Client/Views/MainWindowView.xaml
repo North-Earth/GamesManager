@@ -14,7 +14,9 @@
         <viewmodels:MainWindowViewModel/>
     </Window.DataContext>
 
-    <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True">
+    <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True"
+                               IsOpen="{Binding IsOpenRootDialog}" 
+                               DialogContent="{Binding RootDialog}">
         <Grid Background="#FF464646">
             
             <Grid.RowDefinitions>
@@ -56,7 +58,7 @@
             </Grid>
 
             <Grid Grid.Column="0" Grid.Row="1">
-                <UserControl Content="{Binding UserControl}"/>
+                <UserControl Content="{Binding RootControl}"/>
             </Grid>
         </Grid>
     </materialDesign:DialogHost>
