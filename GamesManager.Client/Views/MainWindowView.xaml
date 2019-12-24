@@ -34,7 +34,7 @@
                             <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromRight, Duration=0:0:0.8}" FlowDirection="LeftToRight">
                                 <Button Content="{materialDesign:PackIcon GiftOutline}" 
                                         ToolTip="What's News" Foreground="White"
-                                        Command="{Binding OpenDialogWhatsNewCommand}"
+                                        Command="{Binding OpenWhatsNewDialogCommand}"
                                         Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
                             </materialDesign:TransitioningContent>
                             <Button Style="{StaticResource MaterialDesignIconButton}" 
@@ -43,7 +43,7 @@
                                 <materialDesign:PackIcon Kind="SettingsOutline" Height="24" Width="24" />
                             </Button>
                             <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                        Command="{Binding FeedbackButtonCommand}"
+                                        Command="{Binding OpenFeedbackDialogCommand}"
                                         ToolTip="Feedback" Margin="5,0" IsEnabled="True">
                                 <materialDesign:PackIcon Kind="FeedbackOutline" Height="24" Width="24" />
                             </Button>

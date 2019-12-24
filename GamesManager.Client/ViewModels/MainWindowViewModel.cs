@@ -54,7 +54,9 @@ namespace GamesManager.Client.ViewModels
             }
         }
 
-        public ICommand OpenDialogWhatsNewCommand => new Command(OpenDialogWhatsNew);
+        public ICommand OpenWhatsNewDialogCommand => new Command(OpenWhatsNewDialog);
+        public ICommand OpenFeedbackDialogCommand => new Command(OpenFeedbackDialog);
+
         #endregion
 
         #region Constructors
@@ -92,13 +94,16 @@ namespace GamesManager.Client.ViewModels
                 },
             };
 
-            var whatsNewsDialogView = new WhatsNewsDialogView
+            dialogs.Add(new WhatsNewsDialogView
             {
                 Name = nameof(WhatsNewsDialogView),
                 DataContext = new WhatsNewsDialogViewModel(newsItems)
-            };
+            });
 
-            dialogs.Add(whatsNewsDialogView);
+            dialogs.Add(new FeedbackDialogView
+            {
+                Name = nameof(FeedbackDialogView)
+            });
         }
 
         private void OpenRootDialog(string name)
@@ -109,7 +114,9 @@ namespace GamesManager.Client.ViewModels
 
         private void CloseRootDialog() => IsOpenRootDialog = false;
 
-        private void OpenDialogWhatsNew(object obj) => OpenRootDialog(nameof(WhatsNewsDialogView));
+        private void OpenWhatsNewDialog(object obj) => OpenRootDialog(nameof(WhatsNewsDialogView));
+
+        private void OpenFeedbackDialog(object obj) => OpenRootDialog(nameof(FeedbackDialogView));
 
         #endregion
     }
