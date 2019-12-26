@@ -5,16 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:GamesManager.Client.Views"
-             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="350" 
-             MinHeight="450" MinWidth="400" 
-             MaxHeight="450" MaxWidth="400">
+             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="380" 
+             MinHeight="450" MinWidth="380" 
+             MaxHeight="450" MaxWidth="380">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="10">
@@ -24,27 +25,34 @@
         </Grid>
 
         <Grid Grid.Row="1" Margin="10">
-            <ComboBox materialDesign:HintAssist.Hint="Product" materialDesign:TextFieldAssist.HasClearButton="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+            <ComboBox materialDesign:HintAssist.Hint="Product" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                       materialDesign:HintAssist.HelperText="Select one Product" VerticalAlignment="Top" MaxWidth="350">
-                <ComboBoxItem Content="Games Launcher"/>
+                <ComboBoxItem Content="Games Launcher" IsSelected="True"/>
                 <ComboBoxItem Content="Roll a Ball"/>
             </ComboBox>
         </Grid>
-
+        
         <Grid Grid.Row="2" Margin="10">
+            <TextBox materialDesign:HintAssist.Hint="Title your feedback" 
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                     VerticalAlignment="Center"/>
+        </Grid>
+        
+        <Grid Grid.Row="3" Margin="10">
             <TextBox TextWrapping="Wrap" VerticalAlignment="Stretch" 
                      AcceptsReturn="True" 
                      VerticalScrollBarVisibility="Auto" 
-                     SpellCheck.IsEnabled="True" 
-                     materialDesign:HintAssist.Hint="Your feedback" MaxWidth="350"/>
-        </Grid>
-
-        <Grid Grid.Row="3" Margin="10">
-            <materialDesign:RatingBar Value="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                     SpellCheck.IsEnabled="True"
+                     MaxLength="255" MaxLines="10"
+                     materialDesign:HintAssist.Hint="Enter your feedback here. Max message length is 255 chars."/>
         </Grid>
 
         <Grid Grid.Row="4" Margin="10">
-            <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Send feedback" Content="ACCEPT" MaxWidth="350"/>
+            <materialDesign:RatingBar Value="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+
+        <Grid Grid.Row="5" Margin="10">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Send Feedback" Content="Send"/>
         </Grid>
     </Grid>
 </UserControl>
