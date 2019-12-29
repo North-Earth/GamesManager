@@ -8,7 +8,8 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
-        Title="MainWindow" Height="780" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
+        Title="MainWindow" Height="780" Width="1280" 
+        WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
 
     <Window.DataContext>
         <viewmodels:MainWindowViewModel/>
@@ -18,7 +19,7 @@
                                IsOpen="{Binding IsOpenRootDialog}" 
                                DialogContent="{Binding RootDialog}">
         <Grid Background="#FF464646">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="60"/>
                 <RowDefinition Height="1*"/>
@@ -59,6 +60,12 @@
 
             <Grid Grid.Column="0" Grid.Row="1">
                 <UserControl Content="{Binding RootControl}"/>
+                <materialDesign:Snackbar IsActive="False" Margin="200, 0"
+                                         VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+                    <materialDesign:SnackbarMessage Content="New version released, want to upgrade?" 
+                                                    ActionContent="Update" ActionContentStringFormat="" 
+                                                    Background="Black"/>
+                </materialDesign:Snackbar>
             </Grid>
         </Grid>
     </materialDesign:DialogHost>

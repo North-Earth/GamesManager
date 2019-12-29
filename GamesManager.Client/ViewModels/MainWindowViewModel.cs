@@ -65,6 +65,7 @@ namespace GamesManager.Client.ViewModels
         {
             RootControl = new MainControlView();
             InitializeDialogs();
+            OpenUpdateAppDialog();
         }
 
         #endregion
@@ -104,6 +105,12 @@ namespace GamesManager.Client.ViewModels
             {
                 Name = nameof(FeedbackDialogView)
             });
+
+            dialogs.Add(new UpdateAppDialogView
+            {
+                Name = nameof(UpdateAppDialogView)
+                //TODO: DataContext.
+            });
         }
 
         private void OpenRootDialog(string name)
@@ -117,6 +124,8 @@ namespace GamesManager.Client.ViewModels
         private void OpenWhatsNewDialog(object obj) => OpenRootDialog(nameof(WhatsNewsDialogView));
 
         private void OpenFeedbackDialog(object obj) => OpenRootDialog(nameof(FeedbackDialogView));
+
+        private void OpenUpdateAppDialog() => OpenRootDialog(nameof(UpdateAppDialogView));
 
         #endregion
     }
